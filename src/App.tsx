@@ -14,8 +14,16 @@ function App() {
   const [selectedCalendarType, setSelectedCalendarType] = useState<CalendarType>('google')
 
   useEffect(() => {
-    const detectedOS = detectOS()
-    setOS(detectedOS)
+    // 개발 환경에서 URL 파라미터로 OS 강제 설정 (예: ?os=ios 또는 ?os=android)
+    const urlParams = new URLSearchParams(window.location.search)
+    const forcedOS = urlParams.get('os') as 'ios' | 'android' | null
+    
+    if (forcedOS && (forcedOS === 'ios' || forcedOS === 'android')) {
+      setOS(forcedOS)
+    } else {
+      const detectedOS = detectOS()
+      setOS(detectedOS)
+    }
   }, [])
 
   const handleCalendarClick = (type: CalendarType) => {

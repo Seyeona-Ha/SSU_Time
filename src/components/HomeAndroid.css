@@ -18,12 +18,12 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 24px 20px 40px 20px; /* Figma padding-top: 24px, padding-horizontal: 20px, padding-bottom: 40px */
+  padding: 24px 20px 20px 20px; /* padding-bottom 줄여서 푸터를 위로 올림 (40px → 20px) */
 }
 
 /* Header */
 .header {
-  margin-bottom: 40px; /* Figma spacing: 40px */
+  margin-bottom: 60px; /* 상단 로고와 아래 내용 간격 조정 */
 }
 
 .header-top {
@@ -74,6 +74,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-bottom: 0; /* 푸터를 위로 올리기 위해 마진 제거 */
 }
 
 /* Info Section - Figma spacing 적용 */
@@ -103,7 +104,7 @@
 /* Calendar Card Wrapper - Figma spacing 적용 */
 /* 아래로 내리려면 margin-top 값을 증가시키세요 (예: 60px, 80px) */
 .calendar-card-wrapper {
-  margin-bottom: 0; /* 구글 캘린더 바로 아래 footer 위치를 위해 간격 최소화 */
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -111,6 +112,7 @@
   position: relative;
   width: 100%;
   margin-top: 60px; /* 구글 캘린더 버튼과 클릭 버튼을 아래로 이동 - 이 값을 증가시키면 더 아래로 내려갑니다 */
+  gap: 0; /* 구글 캘린더 카드와 푸터 사이 간격 (더 가깝게 하려면 이 값을 줄이세요, 예: 6px, 4px) */
 }
 
 /* Chat Button - 상하 애니메이션 (경쾌하게 뛰듯이) */
@@ -160,15 +162,14 @@
   transform: translateY(0);
 }
 
-/* Footer - Figma spacing 적용 */
-/* 구글 캘린더 바로 아래 위치 */
+/* Footer - 구글 캘린더 카드 바로 아래 위치 */
 .footer {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px; /* Figma gap: 8px */
-  padding: 5px 0; /* padding 최소화 */
-  margin-top: 0; /* 구글 캘린더 바로 아래 위치, 훨씬 더 위로 올림 */
+  padding: 0; /* padding 제거 */
+  margin: 0; /* margin 제거 - gap으로 간격 조절 */
 }
 
 .users-icon {

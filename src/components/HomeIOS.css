@@ -55,7 +55,7 @@
 
 /* Header */
 .header {
-  margin-bottom: 40px;
+  margin-bottom: 5px; /* 상단 로고와 아래 내용 간격 조정 (10px의 절반) */
 }
 
 .header-top {

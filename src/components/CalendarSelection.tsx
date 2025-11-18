@@ -28,10 +28,8 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       description: '수강신청, 중간고사, 기말고사 등 학사 관련 일정을 추가할 수 있습니다.',
       detailTitle: '아래 일정이 추가돼요!',
       items: [
-        { text: '수강신청 일정' },
-        { text: '중간고사 일정' },
-        { text: '기말고사 일정' },
-        { text: '학기 시작/종료 일정' }
+        { text: '교내 학사 캘린더 일정' },
+        { text: '국가・교내 장학금' },
       ]
     },
     {
@@ -40,10 +38,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       description: '학교 행사 및 주요 공지사항 일정을 추가할 수 있습니다.',
       detailTitle: '아래 일정이 추가돼요!',
       items: [
-        { text: '입학식' },
-        { text: '졸업식' },
-        { text: '학술제' },
-        { text: '체육대회' }
+        { text: '총학생회 공지 이벤트 일정' },
       ]
     },
     {
@@ -52,15 +47,15 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       description: '등록금 납부 기간 및 관련 일정을 추가할 수 있습니다.',
       detailTitle: '아래 일정이 추가돼요!',
       items: [
-        { text: '등록금 납부 기간' },
-        { text: '장학금 신청 기간' },
-        { text: '장학금 발표 일정' }
+        { text: '주요 장학 일정' },
       ]
     }
   ];
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+  const [notificationEnabled, setNotificationEnabled] = useState<boolean>(false);
+  const [notificationType, setNotificationType] = useState<'daily' | 'none'>('daily'); // 토글 활성화 시 기본값: 매일(반복)
 
   const toggleExpandCategory = (categoryId: string) => {
     setExpandedCategories(prev =>
@@ -77,6 +72,18 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
         ? prev.filter(id => id !== categoryId)
         : [...prev, categoryId]
     );
+  };
+
+  const toggleNotification = () => {
+    setNotificationEnabled(prev => !prev);
+    // 토글 활성화 시 매일(반복)을 기본값으로 설정
+    if (!notificationEnabled) {
+      setNotificationType('daily');
+    }
+  };
+
+  const selectNotificationType = (type: 'daily' | 'none') => {
+    setNotificationType(type);
   };
 
   const handleAdd = () => {
@@ -106,11 +113,15 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
                 <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            <h1 className="page-title">
-              {calendarType === 'apple' ? '애플 캘린더에 추가하기' : '구글 캘린더에 추가하기'}
-            </h1>
-            <div className="header-spacer"></div>
+            <button className="share-button" aria-label="공유">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12C9 11.76 8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5C21 3.34 19.66 2 18 2C16.34 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12C3 13.66 4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.92 18 21.92C19.61 21.92 20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08Z" fill="#000000"/>
+              </svg>
+            </button>
           </div>
+          <h1 className="page-title">
+            원하는 학사일정을<br />모두 캘린더에 추가하세요
+          </h1>
         </div>
 
         {/* Main Content */}
@@ -147,7 +158,6 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
                     
                     <div className="category-info">
                       <span className="category-name">{category.name}</span>
-                      <p className="category-description-text">{category.description}</p>
                     </div>
                     
                     {/* 오른쪽 화살표 - 확장 시 아래로 회전 */}
@@ -177,6 +187,40 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
                 </div>
               );
             })}
+          </div>
+
+          {/* 알림 설정 섹션 - 카테고리 목록 바로 아래 */}
+          <div className="notification-section">
+            <div className="notification-header">
+              <span className="notification-label">알림</span>
+              <button
+                className={`notification-toggle ${notificationEnabled ? 'active' : ''}`}
+                onClick={toggleNotification}
+                aria-label={notificationEnabled ? '알림 설정 끄기' : '알림 설정 켜기'}
+              >
+                <div className={`toggle-slider ${notificationEnabled ? 'active' : ''}`}>
+                  <div className="toggle-circle"></div>
+                </div>
+              </button>
+            </div>
+
+            {/* 토글 활성화 시 알림 옵션 버튼들 표시 */}
+            {notificationEnabled && (
+              <div className="notification-options">
+                <button
+                  className={`notification-option ${notificationType === 'daily' ? 'active' : ''}`}
+                  onClick={() => selectNotificationType('daily')}
+                >
+                  매일(반복)
+                </button>
+                <button
+                  className={`notification-option ${notificationType === 'none' ? 'active' : ''}`}
+                  onClick={() => selectNotificationType('none')}
+                >
+                  새 일정 알림
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

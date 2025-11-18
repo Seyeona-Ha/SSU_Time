@@ -47,13 +47,12 @@ function HomeAndroid({ onCalendarClick }: HomeAndroidProps) {
               className="google-calendar-card"
               onClick={() => onCalendarClick('google')}
             />
+            {/* Footer - 구글 캘린더 카드 바로 아래 위치 */}
+            <div className="footer">
+              <img src={usersGroupSvg} alt="사용자 그룹" className="users-icon" />
+              <span className="users-text">현재 93명이 이용했어요</span>
+            </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="footer">
-          <img src={usersGroupSvg} alt="사용자 그룹" className="users-icon" />
-          <span className="users-text">현재 93명이 이용했어요</span>
         </div>
       </div>
     </div>
