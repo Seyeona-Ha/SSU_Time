@@ -14,7 +14,7 @@
 }
 
 /* Home Content - Figma spacing 값 적용 */
-.home-content {
+.home-android .home-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -22,11 +22,11 @@
 }
 
 /* Header */
-.header {
+.home-android .header {
   margin-bottom: 60px; /* 상단 로고와 아래 내용 간격 조정 */
 }
 
-.header-top {
+.home-android .header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,7 +34,7 @@
 }
 
 /* Header Logo - SVG로 교체 */
-.header-logo {
+.home-android .header-logo {
   height: 18px; /*상단 로고 크기 조절절 */
   width: auto;
   object-fit: contain;
@@ -42,7 +42,7 @@
 }
 
 /* Share Button - Figma 디자인 토큰 적용 */
-.share-button {
+.home-android .share-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -56,21 +56,21 @@
   min-height: 40px; /* Figma minHeight: 40px */
 }
 
-.share-button:hover {
+.home-android .share-button:hover {
   background-color: rgba(0, 0, 0, 0.04); /* Material Design hover */
 }
 
-.share-button:active {
+.home-android .share-button:active {
   background-color: rgba(0, 0, 0, 0.08); /* Material Design active */
 }
 
-.share-button svg {
+.home-android .share-button svg {
   width: 24px; /* Figma width: 24px */
   height: 24px; /* Figma height: 24px */
 }
 
 /* Main Content */
-.main-content {
+.home-android .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -78,12 +78,12 @@
 }
 
 /* Info Section - Figma spacing 적용 */
-.info-section {
+.home-android .info-section {
   margin-bottom: 40px; /* Figma spacing: 40px */
 }
 
 /* Info Title - Figma typography 토큰 */
-.info-title {
+.home-android .info-title {
   font-size: 24px; /* Figma fontSize: 28px */
   font-weight: 700; /* Figma fontWeight: Bold (700) */
   color: #000000; /* Figma color: #000000 */
@@ -92,7 +92,7 @@
   letter-spacing: -0.5px; /* Figma letterSpacing: -0.5px */
 }
 
-.info-subtitle {
+.home-android .info-subtitle {
   font-size: 16px; /* Figma fontSize: 16px */
   color: #666666; /* Figma color: #666666 */
   margin: 16px 0 0 0; /* Figma marginTop: 24px */
@@ -103,7 +103,7 @@
 
 /* Calendar Card Wrapper - Figma spacing 적용 */
 /* 아래로 내리려면 margin-top 값을 증가시키세요 (예: 60px, 80px) */
-.calendar-card-wrapper {
+.home-android .calendar-card-wrapper {
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
@@ -112,12 +112,12 @@
   position: relative;
   width: 100%;
   margin-top: 60px; /* 구글 캘린더 버튼과 클릭 버튼을 아래로 이동 - 이 값을 증가시키면 더 아래로 내려갑니다 */
-  gap: 0; /* 구글 캘린더 카드와 푸터 사이 간격 (더 가깝게 하려면 이 값을 줄이세요, 예: 6px, 4px) */
+  gap: 16px; /* 구글 캘린더 카드와 푸터 사이 간격 */
 }
 
 /* Chat Button - 상하 애니메이션 (경쾌하게 뛰듯이) */
 /* 위치 조정: top (위/아래), left (왼쪽/오른쪽) 값을 변경하세요 */
-.chat-button-animated {
+.home-android .chat-button-animated {
   width: 60px; /* Figma width: 60px */
   height: 34px; /* Figma height: 34px */
   position: absolute;
@@ -143,7 +143,7 @@
 }
 
 /* Google Calendar Card - SVG로 교체 (전체 카드 디자인 포함) */
-.google-calendar-card {
+.home-android .google-calendar-card {
   width: 150px; /* Figma width: 150px */
   height: 200px; /* Figma height: 200px */
   object-fit: contain;
@@ -154,16 +154,16 @@
   user-select: none; /* 이미지 드래그 방지 */
 }
 
-.google-calendar-card:hover {
+.home-android .google-calendar-card:hover {
   transform: translateY(-2px);
 }
 
-.google-calendar-card:active {
+.home-android .google-calendar-card:active {
   transform: translateY(0);
 }
 
 /* Footer - 구글 캘린더 카드 바로 아래 위치 */
-.footer {
+.home-android .footer {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -172,14 +172,14 @@
   margin: 0; /* margin 제거 - gap으로 간격 조절 */
 }
 
-.users-icon {
+.home-android .users-icon {
   width: 18px; /* SVG width: 18px */
   height: 18px; /* SVG height: 18px */
   display: block;
   object-fit: contain;
 }
 
-.users-text {
+.home-android .users-text {
   font-size: 14px; /* Figma fontSize: 14px */
   color: #999999; /* Figma color: #999999 */
   font-weight: 400; /* Figma fontWeight: Regular (400) */
@@ -189,11 +189,11 @@
 
 /* Responsive */
 @media (max-width: 375px) {
-  .info-title {
+  .home-android .info-title {
     font-size: 24px;
   }
 
-  .google-calendar-card {
+  .home-android .google-calendar-card {
     width: 150px;
     height: 200px;
   }

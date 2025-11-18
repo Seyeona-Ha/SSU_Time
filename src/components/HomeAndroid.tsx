@@ -61,4 +61,3 @@ function HomeAndroid({ onCalendarClick }: HomeAndroidProps) {
 
 export default HomeAndroid;
 
-
