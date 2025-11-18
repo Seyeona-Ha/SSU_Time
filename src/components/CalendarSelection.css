@@ -1,0 +1,340 @@
+/* 캘린더 선택 페이지 스타일 - Figma SVG 디자인 기반 */
+.calendar-selection {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 428px;
+  margin: 0 auto;
+  background-color: #F5F4F6;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.calendar-selection-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px 40px 20px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 32px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  position: relative;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 40px;
+  min-height: 40px;
+  color: #000000;
+  position: absolute;
+  left: -8px;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.back-button:active {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.back-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  text-align: center;
+  margin: 0;
+  flex: 1;
+  width: 100%;
+}
+
+.header-spacer {
+  width: 40px; /* back-button과 동일한 너비로 중앙 정렬 */
+  position: absolute;
+  right: -8px;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* flex overflow 처리 */
+}
+
+.calendar-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-item {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-item:active {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.category-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  min-height: 66px; /* SVG 기준 높이 */
+  cursor: pointer;
+}
+
+.category-header:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* 체크박스 버튼 */
+.checkbox-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checkbox-button:hover {
+  transform: scale(1.05);
+}
+
+.checkbox-button:active {
+  transform: scale(0.95);
+}
+
+.checkbox-button svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+/* 카테고리 정보 영역 */
+.category-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0; /* 텍스트 오버플로우 처리 */
+}
+
+.category-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  letter-spacing: -0.3px;
+  line-height: 1.4;
+}
+
+.category-description-text {
+  font-size: 14px;
+  color: #535353;
+  line-height: 1.5;
+  margin: 0;
+  letter-spacing: -0.2px;
+  word-wrap: break-word;
+}
+
+/* 오른쪽 화살표 (장식용) */
+.expand-arrow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+  padding-top: 2px; /* 체크박스와 정렬 */
+  color: #7D7D7D;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expand-arrow.expanded {
+  transform: rotate(90deg);
+}
+
+.expand-arrow svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* 확장된 상세 설명 */
+.category-detail {
+  padding: 16px 20px 20px 50px; /* 왼쪽 패딩: 체크박스(18px) + gap(12px) + 왼쪽 여백(20px) */
+  border-top: 1px solid #F0F0F0;
+  animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.2px;
+  line-height: 1.5;
+}
+
+.detail-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.detail-check-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #9C9C9C;
+  stroke: #9C9C9C;
+}
+
+.detail-item-text {
+  font-size: 14px;
+  color: #535353;
+  letter-spacing: -0.2px;
+  line-height: 1.5;
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  padding-top: 24px;
+  padding-bottom: 0;
+}
+
+.add-button {
+  width: 100%;
+  background-color: #FE2B27; /* 빨간색 - 홈화면과 동일 */
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(254, 43, 39, 0.25);
+  letter-spacing: -0.3px;
+}
+
+.add-button:hover:not(.disabled) {
+  background-color: #E02622;
+  box-shadow: 0 4px 12px rgba(254, 43, 39, 0.35);
+}
+
+.add-button:active:not(.disabled) {
+  background-color: #C9221F;
+  box-shadow: 0 2px 6px rgba(254, 43, 39, 0.3);
+  transform: translateY(1px);
+}
+
+.add-button.disabled {
+  background-color: #E0E0E0;
+  color: #999999;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 375px) {
+  .calendar-selection-content {
+    padding: 20px 16px 32px 16px;
+  }
+  
+  .page-title {
+    font-size: 16px;
+  }
+  
+  .category-name {
+    font-size: 15px;
+  }
+  
+  .category-description-text {
+    font-size: 13px;
+  }
+  
+  .category-header {
+    padding: 14px 16px;
+  }
+}
+
+/* 스크롤 처리 */
+.main-content {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 스크롤바 스타일링 (WebKit 브라우저) */
+.main-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+

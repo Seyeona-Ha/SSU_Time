@@ -1,0 +1,199 @@
+/* Figma 디자인 토큰 기반 Android 홈화면 스타일 */
+.home-android {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 428px;
+  margin: 0 auto;
+  background-color: #F5F4F6;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+/* Home Content - Figma spacing 값 적용 */
+.home-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px 40px 20px; /* Figma padding-top: 24px, padding-horizontal: 20px, padding-bottom: 40px */
+}
+
+/* Header */
+.header {
+  margin-bottom: 40px; /* Figma spacing: 40px */
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px; /* Figma spacing: 20px */
+}
+
+/* Header Logo - SVG로 교체 */
+.header-logo {
+  height: 18px; /*상단 로고 크기 조절절 */
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Share Button - Figma 디자인 토큰 적용 */
+.share-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px; /* Figma padding: 8px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px; /* Figma borderRadius: 24px (circular) */
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 40px; /* Figma minWidth: 40px */
+  min-height: 40px; /* Figma minHeight: 40px */
+}
+
+.share-button:hover {
+  background-color: rgba(0, 0, 0, 0.04); /* Material Design hover */
+}
+
+.share-button:active {
+  background-color: rgba(0, 0, 0, 0.08); /* Material Design active */
+}
+
+.share-button svg {
+  width: 24px; /* Figma width: 24px */
+  height: 24px; /* Figma height: 24px */
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Info Section - Figma spacing 적용 */
+.info-section {
+  margin-bottom: 40px; /* Figma spacing: 40px */
+}
+
+/* Info Title - Figma typography 토큰 */
+.info-title {
+  font-size: 24px; /* Figma fontSize: 28px */
+  font-weight: 700; /* Figma fontWeight: Bold (700) */
+  color: #000000; /* Figma color: #000000 */
+  margin: 0 0 12px 0; /* Figma marginBottom: 12px */
+  line-height: 1; /* Figma lineHeight: 1.3 */
+  letter-spacing: -0.5px; /* Figma letterSpacing: -0.5px */
+}
+
+.info-subtitle {
+  font-size: 16px; /* Figma fontSize: 16px */
+  color: #666666; /* Figma color: #666666 */
+  margin: 16px 0 0 0; /* Figma marginTop: 24px */
+  font-weight: 400; /* Figma fontWeight: Regular (400) */
+  letter-spacing: -0.3px; /* Figma letterSpacing: -0.3px */
+  line-height: 1.5; /* Figma lineHeight: 1.5 */
+}
+
+/* Calendar Card Wrapper - Figma spacing 적용 */
+/* 아래로 내리려면 margin-top 값을 증가시키세요 (예: 60px, 80px) */
+.calendar-card-wrapper {
+  margin-bottom: 0; /* 구글 캘린더 바로 아래 footer 위치를 위해 간격 최소화 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  margin-top: 60px; /* 구글 캘린더 버튼과 클릭 버튼을 아래로 이동 - 이 값을 증가시키면 더 아래로 내려갑니다 */
+}
+
+/* Chat Button - 상하 애니메이션 (경쾌하게 뛰듯이) */
+/* 위치 조정: top (위/아래), left (왼쪽/오른쪽) 값을 변경하세요 */
+.chat-button-animated {
+  width: 60px; /* Figma width: 60px */
+  height: 34px; /* Figma height: 34px */
+  position: absolute;
+  top: -50px; /* 위로 올리려면 음수 값 증가 (예: -30px), 아래로 내리려면 음수 값 감소 (예: -10px) */
+  left: calc(50% + 30px); /* 오른쪽으로 이동하려면 숫자 증가 (예: +20px), 왼쪽으로 이동하려면 숫자 감소 (예: +5px) */
+  /* 구글 캘린더 카드 중앙(50%) + 카드 절반 너비(75px) + 간격(10px) = 오른쪽 위 위치 */
+  object-fit: contain;
+  display: block;
+  animation: bounce-vertical 1.5s ease-in-out infinite;
+  z-index: 10;
+}
+
+/* 경쾌하게 뛰듯이 상하 애니메이션 */
+@keyframes bounce-vertical {
+  0%, 100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(-12px);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* Google Calendar Card - SVG로 교체 (전체 카드 디자인 포함) */
+.google-calendar-card {
+  width: 150px; /* Figma width: 150px */
+  height: 200px; /* Figma height: 200px */
+  object-fit: contain;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  user-select: none; /* 이미지 드래그 방지 */
+}
+
+.google-calendar-card:hover {
+  transform: translateY(-2px);
+}
+
+.google-calendar-card:active {
+  transform: translateY(0);
+}
+
+/* Footer - Figma spacing 적용 */
+/* 구글 캘린더 바로 아래 위치 */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Figma gap: 8px */
+  padding: 5px 0; /* padding 최소화 */
+  margin-top: 0; /* 구글 캘린더 바로 아래 위치, 훨씬 더 위로 올림 */
+}
+
+.users-icon {
+  width: 18px; /* SVG width: 18px */
+  height: 18px; /* SVG height: 18px */
+  display: block;
+  object-fit: contain;
+}
+
+.users-text {
+  font-size: 14px; /* Figma fontSize: 14px */
+  color: #999999; /* Figma color: #999999 */
+  font-weight: 400; /* Figma fontWeight: Regular (400) */
+  letter-spacing: -0.2px; /* Figma letterSpacing: -0.2px */
+  line-height: 1.5; /* Figma lineHeight: 1.5 */
+}
+
+/* Responsive */
+@media (max-width: 375px) {
+  .info-title {
+    font-size: 24px;
+  }
+
+  .google-calendar-card {
+    width: 150px;
+    height: 200px;
+  }
+}

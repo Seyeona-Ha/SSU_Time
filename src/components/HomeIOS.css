@@ -1,0 +1,246 @@
+/* Figma 디자인 토큰 기반 iOS 홈화면 스타일 */
+.home-ios {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 428px;
+  margin: 0 auto;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Noto Sans KR', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+/* Status Bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px 0 20px;
+  height: 44px;
+  background-color: #FFFFFF;
+}
+
+.status-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.time {
+  font-size: 15px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.signal, .wifi, .battery {
+  font-size: 14px;
+}
+
+/* Home Content - Figma spacing 값 적용 */
+.home-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px 40px 20px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 40px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.logo-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FF0000;
+  letter-spacing: -0.3px;
+}
+
+.share-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.share-button:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.share-button:active {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.share-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Info Section - Figma spacing 적용 */
+.info-section {
+  margin-bottom: 40px;
+}
+
+/* Info Title - Figma typography 토큰 */
+.info-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+
+.info-subtitle {
+  font-size: 16px;
+  color: #666666;
+  margin: 24px 0 0 0;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  line-height: 1.5;
+}
+
+/* Calendar Cards */
+.calendar-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.calendar-card {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #F0F0F0;
+}
+
+.calendar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.calendar-card:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.calendar-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.apple-icon {
+  background-color: #F5F4F6;
+}
+
+.google-icon {
+  background-color: #F3F3FA;
+}
+
+.apple-logo-inside,
+.google-logo-inside {
+  position: absolute;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.calendar-card-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+  text-align: center;
+  letter-spacing: -0.3px;
+}
+
+/* Footer - Figma spacing 적용 */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 0;
+  margin-top: auto;
+}
+
+.users-icon {
+  font-size: 16px;
+}
+
+.users-text {
+  font-size: 14px;
+  color: #999999;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 375px) {
+  .info-title {
+    font-size: 24px;
+  }
+  
+  .calendar-card {
+    padding: 16px;
+  }
+}
