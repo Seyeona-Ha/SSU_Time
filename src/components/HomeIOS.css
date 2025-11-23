@@ -18,7 +18,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 24px 20px 20px 20px; /* padding-bottom 줄여서 푸터를 위로 올림 (40px → 20px) */
+  padding: 24px 16px 20px 16px; /* 상단 패딩: 16px -> 24px (캘린더 선택화면과 공유 버튼 절대 위치 맞추기) */
 }
 
 /* Header */
@@ -31,6 +31,7 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 20px; /* Figma spacing: 20px */
+  position: relative;
 }
 
 /* Header Logo - SVG로 교체 */
@@ -39,6 +40,9 @@
   width: auto;
   object-fit: contain;
   display: block;
+  position: absolute;
+  left: -8px;
+  z-index: 10;
 }
 
 /* Share Button - Figma 디자인 토큰 적용 */
@@ -54,6 +58,9 @@
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 40px; /* Figma minWidth: 40px */
   min-height: 40px; /* Figma minHeight: 40px */
+  position: absolute;
+  right: -8px;
+  z-index: 10;
 }
 
 .home-ios .share-button:hover {
