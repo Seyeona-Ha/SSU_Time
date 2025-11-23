@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './CalendarSelection.css';
+import requiredBadge from '../assets/required-badge.svg';
 
 interface CalendarSelectionProps {
   calendarType: 'apple' | 'google';
@@ -158,11 +159,18 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
                     
                     <div className="category-info">
                       <span className="category-name">{category.name}</span>
+                      {category.id === '1' && (
+                        <img 
+                          src={requiredBadge} 
+                          alt="필수" 
+                          className="required-badge"
+                        />
+                      )}
                     </div>
                     
                     {/* 오른쪽 화살표 - 확장 시 아래로 회전 */}
                     <div className={`expand-arrow ${isExpanded ? 'expanded' : ''}`}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 18L15 12L9 6" stroke="#7D7D7D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </div>

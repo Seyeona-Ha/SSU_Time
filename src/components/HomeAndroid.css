@@ -80,24 +80,27 @@
 /* Info Section - Figma spacing 적용 */
 .home-android .info-section {
   margin-bottom: 40px; /* Figma spacing: 40px */
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* 두 개의 타이틀 텍스트 박스 사이 간격 */
 }
 
 /* Info Title - Figma typography 토큰 */
 .home-android .info-title {
-  font-size: 24px; /* Figma fontSize: 28px */
+  font-size: 20px; /* fontSize: 24px -> 20px */
   font-weight: 700; /* Figma fontWeight: Bold (700) */
   color: #000000; /* Figma color: #000000 */
-  margin: 0 0 12px 0; /* Figma marginBottom: 12px */
+  margin: 0; /* marginBottom: 12px -> 0px */
   line-height: 1; /* Figma lineHeight: 1.3 */
-  letter-spacing: -0.5px; /* Figma letterSpacing: -0.5px */
+  letter-spacing: -0.5px; /* letterSpacing: -0.5px -> -2px */
 }
 
 .home-android .info-subtitle {
   font-size: 16px; /* Figma fontSize: 16px */
   color: #666666; /* Figma color: #666666 */
-  margin: 16px 0 0 0; /* Figma marginTop: 24px */
+  margin: 6px 0 0 0; /* marginTop: 16px -> 6px */
   font-weight: 400; /* Figma fontWeight: Regular (400) */
-  letter-spacing: -0.3px; /* Figma letterSpacing: -0.3px */
+  letter-spacing: -0.5px; /* letterSpacing: -0.3px -> -2px */
   line-height: 1.5; /* Figma lineHeight: 1.5 */
 }
 
