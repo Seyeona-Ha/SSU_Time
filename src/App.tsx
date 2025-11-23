@@ -48,6 +48,7 @@ function App() {
         calendarType={selectedCalendarType}
         onBack={handleBack}
         onAdd={handleAdd}
+        isMobile={os === 'ios' || os === 'android'}
       />
     )
   }
