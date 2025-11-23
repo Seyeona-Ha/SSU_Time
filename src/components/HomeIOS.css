@@ -41,7 +41,7 @@
   object-fit: contain;
   display: block;
   position: absolute;
-  left: -8px;
+  left: 0px; /* 왼쪽 여백 조정: -8px -> 0px */
   z-index: 10;
 }
 

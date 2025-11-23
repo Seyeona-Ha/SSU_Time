@@ -54,17 +54,18 @@ function App() {
   }
 
   // OS에 따라 적절한 홈화면 렌더링
+  // key prop을 추가하여 currentPage가 변경될 때마다 컴포넌트가 재마운트되도록 함
   if (os === 'ios') {
-    return <HomeIOS onCalendarClick={handleCalendarClick} />
+    return <HomeIOS key={currentPage} onCalendarClick={handleCalendarClick} />
   }
 
   if (os === 'android') {
-    return <HomeAndroid onCalendarClick={handleCalendarClick} />
+    return <HomeAndroid key={currentPage} onCalendarClick={handleCalendarClick} />
   }
 
   // 데스크톱이나 다른 OS의 경우 기본적으로 Android 버전 표시
   // (개발/테스트 환경에서 확인 가능하도록)
-  return <HomeAndroid onCalendarClick={handleCalendarClick} />
+  return <HomeAndroid key={currentPage} onCalendarClick={handleCalendarClick} />
 }
 
 export default App

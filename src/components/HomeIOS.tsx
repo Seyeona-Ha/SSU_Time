@@ -1,15 +1,35 @@
+import { useEffect, useState } from 'react';
 import './HomeIOS.css';
 import logoSvg from '../assets/logo.svg';
 import appleCalendarCard from '../assets/apple-calendar-card.svg';
 import googleCalendarCard from '../assets/google-calendar-card.svg';
 import usersGroupSvg from '../assets/users-group.svg';
 import { share } from '../utils/share';
+import { trackVisitor, getCurrentVisitorCount } from '../utils/visitorCount';
 
 interface HomeIOSProps {
   onCalendarClick: (type: 'apple' | 'google') => void;
 }
 
 function HomeIOS({ onCalendarClick }: HomeIOSProps) {
+  const [visitorCount, setVisitorCount] = useState<number | null>(null); // 초기값 null
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때마다 방문자 수 추적 및 가져오기
+    // 처음 방문한 경우에만 카운트 증가, 이미 방문한 경우 최신 카운트만 가져오기
+    trackVisitor().then(count => {
+      setVisitorCount(count);
+    }).catch(error => {
+      console.error('방문자 수 가져오기 실패:', error);
+      // 에러 발생 시 최신 카운트만 가져오기 시도
+      getCurrentVisitorCount().then(count => {
+        setVisitorCount(count);
+      }).catch(() => {
+        setVisitorCount(0);
+      });
+    });
+  }, []);
+
   const handleShare = async () => {
     await share();
   };
@@ -55,7 +75,9 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
           {/* Footer - 캘린더 카드 바로 아래 위치 */}
           <div className="footer">
             <img src={usersGroupSvg} alt="사용자 그룹" className="users-icon" />
-            <span className="users-text">현재 93명이 이용했어요</span>
+            <span className="users-text">
+              {visitorCount !== null ? `현재 ${visitorCount}명이 이용했어요` : '로딩 중...'}
+            </span>
           </div>
         </div>
       </div>
