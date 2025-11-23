@@ -7,7 +7,6 @@ interface CalendarSelectionProps {
   calendarType: 'apple' | 'google';
   onBack: () => void;
   onAdd: (selectedCategories: string[]) => void;
-  isMobile?: boolean;
 }
 
 interface CalendarItem {
@@ -22,11 +21,9 @@ interface CalendarCategory {
   items: CalendarItem[];
 }
 
-function CalendarSelection({ calendarType, onBack, onAdd, isMobile = false }: CalendarSelectionProps) {
+function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionProps) {
   const handleShare = async () => {
-    if (isMobile) {
-      await share();
-    }
+    await share();
   };
   // 캘린더 카테고리 데이터
   const categories: CalendarCategory[] = [
