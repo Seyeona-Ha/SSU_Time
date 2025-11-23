@@ -55,8 +55,6 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
-  const [notificationEnabled, setNotificationEnabled] = useState<boolean>(false);
-  const [notificationType, setNotificationType] = useState<'daily' | 'none'>('daily'); // 토글 활성화 시 기본값: 매일(반복)
 
   const toggleExpandCategory = (categoryId: string) => {
     setExpandedCategories(prev =>
@@ -75,17 +73,6 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     );
   };
 
-  const toggleNotification = () => {
-    setNotificationEnabled(prev => !prev);
-    // 토글 활성화 시 매일(반복)을 기본값으로 설정
-    if (!notificationEnabled) {
-      setNotificationType('daily');
-    }
-  };
-
-  const selectNotificationType = (type: 'daily' | 'none') => {
-    setNotificationType(type);
-  };
 
   const handleAdd = () => {
     if (selectedCategories.length > 0) {
@@ -195,40 +182,6 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
                 </div>
               );
             })}
-          </div>
-
-          {/* 알림 설정 섹션 - 카테고리 목록 바로 아래 */}
-          <div className="notification-section">
-            <div className="notification-header">
-              <span className="notification-label">알림</span>
-              <button
-                className={`notification-toggle ${notificationEnabled ? 'active' : ''}`}
-                onClick={toggleNotification}
-                aria-label={notificationEnabled ? '알림 설정 끄기' : '알림 설정 켜기'}
-              >
-                <div className={`toggle-slider ${notificationEnabled ? 'active' : ''}`}>
-                  <div className="toggle-circle"></div>
-                </div>
-              </button>
-            </div>
-
-            {/* 토글 활성화 시 알림 옵션 버튼들 표시 */}
-            {notificationEnabled && (
-              <div className="notification-options">
-                <button
-                  className={`notification-option ${notificationType === 'daily' ? 'active' : ''}`}
-                  onClick={() => selectNotificationType('daily')}
-                >
-                  매일(반복)
-                </button>
-                <button
-                  className={`notification-option ${notificationType === 'none' ? 'active' : ''}`}
-                  onClick={() => selectNotificationType('none')}
-                >
-                  새 일정 알림
-                </button>
-              </div>
-            )}
           </div>
         </div>
 
