@@ -58,7 +58,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
   ];
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['1']); // 기본 학사일정 자동 선택
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(['1']); // 기본 학사일정 상세 설명 자동 펼침
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]); // 모든 카테고리를 닫힌 상태로 시작
 
   const toggleExpandCategory = (categoryId: string) => {
     setExpandedCategories(prev =>

@@ -99,7 +99,7 @@
   color: #000000; /* Figma color: #000000 */
   margin: 0; /* marginBottom: 12px -> 0px */
   line-height: 1; /* Figma lineHeight: 1.3 */
-  letter-spacing: -2px; /* letterSpacing: -0.5px -> -2px */
+  letter-spacing: -0.5px; /* letterSpacing: -0.5px -> -2px */
 }
 
 .home-ios .info-subtitle {
@@ -107,7 +107,7 @@
   color: #666666; /* Figma color: #666666 */
   margin: 6px 0 0 0; /* marginTop: 16px -> 6px */
   font-weight: 400; /* Figma fontWeight: Regular (400) */
-  letter-spacing: -2px; /* letterSpacing: -0.3px -> -2px */
+  letter-spacing: -0.5px; /* letterSpacing: -0.3px -> -2px */
   line-height: 1.5; /* Figma lineHeight: 1.5 */
 }
 
@@ -121,15 +121,15 @@
   align-items: flex-start;
   position: relative;
   width: 100%;
-  margin-top: 60px; /* 캘린더 버튼을 아래로 이동 - 이 값을 증가시키면 더 아래로 내려갑니다 */
+  margin-top: 80px; /* 캘린더 버튼을 아래로 이동 - 타이틀과 카드 사이 간격 */
   gap: 16px; /* 애플 캘린더와 구글 캘린더 사이 간격 */
   flex-wrap: nowrap !important; /* 줄바꿈 방지 - 항상 가로로 배치 */
 }
 
 /* Apple Calendar Card - SVG로 교체 (전체 카드 디자인 포함) */
 .home-ios .apple-calendar-card {
-  width: 150px; /* Figma width: 150px */
-  height: 200px; /* Figma height: 200px */
+  width: 165.5px; /* 캘린더 버튼 넓이 */
+  height: 220px; /* 캘린더 버튼 높이 */
   object-fit: contain;
   display: block;
   cursor: pointer;
@@ -149,8 +149,8 @@
 
 /* Google Calendar Card - SVG로 교체 (전체 카드 디자인 포함) */
 .home-ios .google-calendar-card {
-  width: 150px; /* Figma width: 150px */
-  height: 200px; /* Figma height: 200px */
+  width: 165.5px; /* 캘린더 버튼 넓이 */
+  height: 220px; /* 캘린더 버튼 높이 */
   object-fit: contain;
   display: block;
   cursor: pointer;
@@ -202,8 +202,8 @@
 
   .home-ios .apple-calendar-card,
   .home-ios .google-calendar-card {
-    width: 150px;
-    height: 200px;
+    width: 165.5px;
+    height: 220px;
   }
 
   .home-ios .calendar-card-wrapper {

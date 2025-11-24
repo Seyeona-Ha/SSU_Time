@@ -121,7 +121,7 @@
   align-items: center;
   position: relative;
   width: 100%;
-  margin-top: 60px; /* 구글 캘린더 버튼과 클릭 버튼을 아래로 이동 - 이 값을 증가시키면 더 아래로 내려갑니다 */
+  margin-top: 80px; /* 구글 캘린더 버튼과 클릭 버튼을 아래로 이동 - 타이틀과 카드 사이 간격 */
   gap: 16px; /* 구글 캘린더 카드와 푸터 사이 간격 */
 }
 
@@ -154,8 +154,8 @@
 
 /* Google Calendar Card - SVG로 교체 (전체 카드 디자인 포함) */
 .home-android .google-calendar-card {
-  width: 150px; /* Figma width: 150px */
-  height: 200px; /* Figma height: 200px */
+  width: 165.5px; /* 캘린더 버튼 넓이 */
+  height: 220px; /* 캘린더 버튼 높이 */
   object-fit: contain;
   display: block;
   cursor: pointer;
@@ -204,7 +204,7 @@
   }
 
   .home-android .google-calendar-card {
-    width: 150px;
-    height: 200px;
+    width: 165.5px;
+    height: 220px;
   }
 }
