@@ -60,6 +60,32 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['1']); // 기본 학사일정 자동 선택
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]); // 모든 카테고리를 닫힌 상태로 시작
 
+  /**
+   * 선택된 카테고리 조합에 따라 캘린더 URL을 매핑합니다.
+   * key는 카테고리 ID를 정렬해 쉼표로 연결한 문자열입니다.
+   * TODO: 나머지 6개의 조합도 이 객체에 추가하세요.
+   */
+  const calendarCombinationUrls: Record<string, { apple?: string; google?: string }> = {
+    // 핵심 학사 일정(기본 학사일정)만 선택했을 때
+    '1': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_standard.ics',
+      google: 'https://calendar.google.com/calendar/render'
+    },
+    // 행사 일정만 선택했을 때
+    '2': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_event.ics',
+      google: 'https://calendar.google.com/calendar/render'
+    },
+    // 장학 일정만 선택했을 때
+    '3': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_scholarship.ics',
+      google: 'https://calendar.google.com/calendar/render'
+    }
+  };
+
+  const getCombinationKey = (categoryIds: string[]) =>
+    [...categoryIds].sort().join(',');
+
   const toggleExpandCategory = (categoryId: string) => {
     setExpandedCategories(prev =>
       prev.includes(categoryId)
@@ -83,11 +109,15 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       // onAdd 콜백 호출
       onAdd(selectedCategories);
       
-      // 애플 캘린더 또는 구글 캘린더에 따라 다른 URL로 이동
-      // 실제 구현 시 선택된 카테고리 정보와 함께 URL 파라미터로 전달
-      const calendarUrl = calendarType === 'apple' 
-        ? 'https://calendar.apple.com/add' 
-        : 'https://calendar.google.com/calendar/render';
+      const combinationKey = getCombinationKey(selectedCategories);
+      const combination = calendarCombinationUrls[combinationKey];
+
+      // 매핑된 URL이 있으면 사용하고, 없으면 기본 URL로 이동
+      const calendarUrl =
+        combination?.[calendarType] ??
+        (calendarType === 'apple'
+          ? 'https://calendar.apple.com/add'
+          : 'https://calendar.google.com/calendar/render');
       
       // 선택된 카테고리 정보와 함께 URL로 이동
       window.location.href = calendarUrl;
