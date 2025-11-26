@@ -69,22 +69,22 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     // 핵심 학사 일정(기본 학사일정)만 선택했을 때
     '1': {
       apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_standard.ics',
-      google: 'https://calendar.google.com/calendar/render'
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=g1gkfae8eqj5us6l33pci3msapirf1e2%40import.calendar.google.com'
     },
     // 행사 일정만 선택했을 때
     '2': {
       apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_event.ics',
-      google: 'https://calendar.google.com/calendar/render'
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=8c3osusf377t3av2e18djc026vqu5vqs%40import.calendar.google.com'
     },
     // 장학 일정만 선택했을 때
     '3': {
       apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_scholarship.ics',
-      google: 'https://calendar.google.com/calendar/render'
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=jau5un3ok2oqj1emkihcb7j1mcsg1rac%40import.calendar.google.com'
     },
     // 모든 일정(기본+행사+장학) 선택 시
     '1,2,3': {
       apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_all.ics',
-      google: 'https://calendar.google.com/calendar/render'
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=g30emc5tf5222s4aec0qqafvk5hb1qv4%40import.calendar.google.com'
     }
   };
 
