@@ -80,6 +80,11 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     '3': {
       apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_scholarship.ics',
       google: 'https://calendar.google.com/calendar/render'
+    },
+    // 모든 일정(기본+행사+장학) 선택 시
+    '1,2,3': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_all.ics',
+      google: 'https://calendar.google.com/calendar/render'
     }
   };
 
