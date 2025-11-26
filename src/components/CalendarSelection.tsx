@@ -69,7 +69,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     // 핵심 학사 일정(기본 학사일정)만 선택했을 때
     '1': {
       apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_standard.ics',
-      google: 'https://calendar.google.com/calendar/u/0/render?cid=g1gkfae8eqj5us6l33pci3msapirf1e2%40import.calendar.google.com'
+      google: 'https://calendar.google.com/calendar/u/0/r?cid=59c153d47fc18e35037e5f50c1caabfb4e66bb7a81b124431ec25cc9ad3eb7a3%40group.calendar.google.com'
     },
     // 행사 일정만 선택했을 때
     '2': {
