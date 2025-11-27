@@ -79,7 +79,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     // 장학 일정만 선택했을 때
     '3': {
       apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_scholarship.ics',
-      google: 'https://calendar.google.com/calendar/u/0/render?cid=jau5un3ok2oqj1emkihcb7j1mcsg1rac%40import.calendar.google.com'
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=jau5un3ok2oqj1emkihcb7j1mcsg1rac@import.calendar.google.com'
     },
     // 모든 일정(기본+행사+장학) 선택 시
     '1,2,3': {
