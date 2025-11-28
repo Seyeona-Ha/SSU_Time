@@ -3,11 +3,10 @@
  */
 export async function share(): Promise<void> {
   const currentUrl = window.location.href;
-  const shareMessage =
-    `흩어진 학사 일정을 모아 자동으로 캘린더에 추가할 수 있어요! ${currentUrl}`;
   const shareData: ShareData = {
     title: 'SSU Time - 학사 일정 추가 서비스',
-    text: shareMessage,
+    text: '흩어진 학사 일정을 모아 자동으로 캘린더에 추가할 수 있어요!',
+    url: currentUrl,
   };
 
   try {
@@ -37,7 +36,7 @@ export async function share(): Promise<void> {
       }
     } else {
       // Fallback: 클립보드에 복사
-      await navigator.clipboard.writeText(currentUrl);
+      await navigator.clipboard.writeText(shareData.url || currentUrl);
       alert('링크가 클립보드에 복사되었습니다.');
     }
   } catch (error) {
@@ -46,7 +45,7 @@ export async function share(): Promise<void> {
       console.error('공유 실패:', error);
       // 에러 발생 시 클립보드에 복사 시도
       try {
-        await navigator.clipboard.writeText(currentUrl);
+        await navigator.clipboard.writeText(shareData.url || currentUrl);
         alert('링크가 클립보드에 복사되었습니다.');
       } catch (clipboardError) {
         console.error('클립보드 복사 실패:', clipboardError);
