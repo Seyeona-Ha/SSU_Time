@@ -205,8 +205,4 @@
     width: 165.5px;
     height: 220px;
   }
-
-  .home-ios .calendar-card-wrapper {
-    gap: 12px; /* 작은 화면에서 간격 줄임 */
-  }
 }
