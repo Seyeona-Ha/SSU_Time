@@ -39,20 +39,20 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     },
     {
       id: '2',
-      name: '교내 행사 일정',
-      description: '학교 행사 및 주요 공지사항 일정을 추가할 수 있습니다.',
-      detailTitle: '아래 일정이 추가돼요!',
-      items: [
-        { text: '총학생회 공지 이벤트 일정' },
-      ]
-    },
-    {
-      id: '3',
       name: '장학 일정',
       description: '등록금 납부 기간 및 관련 일정을 추가할 수 있습니다.',
       detailTitle: '아래 일정이 추가돼요!',
       items: [
         { text: '주요 장학 일정' },
+      ]
+    },
+    {
+      id: '3',
+      name: '교내 행사 일정',
+      description: '학교 행사 및 주요 공지사항 일정을 추가할 수 있습니다.',
+      detailTitle: '아래 일정이 추가돼요!',
+      items: [
+        { text: '총학생회 공지 이벤트 일정' },
       ]
     }
   ];
@@ -63,28 +63,42 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
   /**
    * 선택된 카테고리 조합에 따라 캘린더 URL을 매핑합니다.
    * key는 카테고리 ID를 정렬해 쉼표로 연결한 문자열입니다.
-   * TODO: 나머지 6개의 조합도 이 객체에 추가하세요.
    */
   const calendarCombinationUrls: Record<string, { apple?: string; google?: string }> = {
-    // 핵심 학사 일정(기본 학사일정)만 선택했을 때
-    '1': {
-      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_standard.ics',
-      google: 'https://calendar.google.com/calendar/u/0/r?cid=59c153d47fc18e35037e5f50c1caabfb4e66bb7a81b124431ec25cc9ad3eb7a3%40group.calendar.google.com'
-    },
-    // 행사 일정만 선택했을 때
-    '2': {
-      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_event.ics',
-      google: 'https://calendar.google.com/calendar/u/0/r?cid=13bd5bb3954acee3aae039b9adb95c876e6f4b6bdeeb713e913633577a3d3662@group.calendar.google.com'
-    },
-    // 장학 일정만 선택했을 때
-    '3': {
-      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_scholarship.ics',
-      google: 'https://calendar.google.com/calendar/u/0/render?cid=jau5un3ok2oqj1emkihcb7j1mcsg1rac@import.calendar.google.com'
-    },
-    // 모든 일정(기본+행사+장학) 선택 시
+    // 기본형&장학형&행사형 (ALL)
     '1,2,3': {
       apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_all.ics',
-      google: 'https://calendar.google.com/calendar/u/0/render?cid=g30emc5tf5222s4aec0qqafvk5hb1qv4%40import.calendar.google.com'
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=6vq8mejv3c2c36576tqk7veh8m80oh6v@import.calendar.google.com'
+    },
+    // 기본형만 선택했을 때
+    '1': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_standard.ics',
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=qn4kvnnp835euccq6pdh3se8qqi791ti@import.calendar.google.com'
+    },
+    // 장학형만 선택했을 때
+    '2': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_scholarship.ics',
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=50pg1o9jp22h1q67arkr324vq1uslgnf@import.calendar.google.com'
+    },
+    // 행사형만 선택했을 때
+    '3': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_event.ics',
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=3fbu9qde17u224b69bssv1fimtfi5dju@import.calendar.google.com'
+    },
+    // 기본형&장학형
+    '1,2': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_standard_scholarship.ics',
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=h3pr9s3ah9ukqi0t0nqq6o4uaj8n7auh@import.calendar.google.com'
+    },
+    // 기본형&행사형
+    '1,3': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_standard_event.ics',
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=e9lkkk7nl6eqo809heol1jevg695t52e@import.calendar.google.com'
+    },
+    // 장학형&행사형
+    '2,3': {
+      apple: 'webcal://ssu-time-crawler-output.s3.ap-northeast-2.amazonaws.com/merged/merged_scholarship_event.ics',
+      google: 'https://calendar.google.com/calendar/u/0/render?cid=364n62j1hcf268fi4hbsurpuh55d2250@import.calendar.google.com'
     }
   };
 
