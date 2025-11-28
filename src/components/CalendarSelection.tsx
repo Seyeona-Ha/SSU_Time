@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import './CalendarSelection.css';
 import requiredBadge from '../assets/required-badge.svg';
 import { share } from '../utils/share';
+import { detectOS } from '../utils/detectOS';
 
 interface CalendarSelectionProps {
   calendarType: 'apple' | 'google';
@@ -22,6 +23,7 @@ interface CalendarCategory {
 }
 
 function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionProps) {
+  const os = useMemo(() => detectOS(), []);
   const handleShare = async () => {
     await share();
   };
@@ -139,6 +141,14 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
           : 'https://calendar.google.com/calendar/render');
       
       // 선택된 카테고리 정보와 함께 URL로 이동
+      if (calendarType === 'google' && os === 'android') {
+        const googleIntentTarget = calendarUrl.replace(/^https?:\/\//, '');
+        const fallbackEncoded = encodeURIComponent(calendarUrl);
+        const androidDeepLink = `intent://${googleIntentTarget}#Intent;scheme=https;package=com.google.android.calendar;S.browser_fallback_url=${fallbackEncoded};end`;
+        window.location.href = androidDeepLink;
+        return;
+      }
+      
       window.location.href = calendarUrl;
     }
   };
