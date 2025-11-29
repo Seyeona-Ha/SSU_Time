@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import './CalendarSelection.css';
 import requiredBadge from '../assets/required-badge.svg';
 import { share } from '../utils/share';
 import { detectOS } from '../utils/detectOS';
+import { trackEvent } from '../utils/mixpanel';
 
 interface CalendarSelectionProps {
   calendarType: 'apple' | 'google';
@@ -24,7 +25,20 @@ interface CalendarCategory {
 
 function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionProps) {
   const os = useMemo(() => detectOS(), []);
+  
+  // calendar_selection_viewed 이벤트 트래킹
+  useEffect(() => {
+    trackEvent('calendar_selection_viewed', {
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+      provider: calendarType === 'apple' ? 'apple' : 'google',
+    });
+  }, [os, calendarType]);
+
   const handleShare = async () => {
+    trackEvent('share_click_selection', {
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+      provider: calendarType === 'apple' ? 'apple' : 'google',
+    });
     await share();
   };
   // 캘린더 카테고리 데이터
@@ -113,20 +127,59 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
         ? prev.filter(id => id !== categoryId)
         : [...prev, categoryId]
     );
+    
+    // category_expand_click 이벤트 트래킹
+    const optionBasic = selectedCategories.includes('1');
+    const optionScholarship = selectedCategories.includes('2');
+    const optionEvent = selectedCategories.includes('3');
+    
+    trackEvent('category_expand_click', {
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+      provider: calendarType === 'apple' ? 'apple' : 'google',
+      option_basic: optionBasic,
+      option_scholarship: optionScholarship,
+      option_event: optionEvent,
+    });
   };
 
   const toggleSelectCategory = (categoryId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    const willBeSelected = !selectedCategories.includes(categoryId);
     setSelectedCategories(prev => 
       prev.includes(categoryId)
         ? prev.filter(id => id !== categoryId)
         : [...prev, categoryId]
     );
+    
+    // category_toggle_click 이벤트 트래킹
+    // 업데이트된 선택 상태를 반영하기 위해 약간의 지연 후 트래킹
+    setTimeout(() => {
+      const currentSelected = willBeSelected
+        ? [...selectedCategories, categoryId]
+        : selectedCategories.filter(id => id !== categoryId);
+      
+      trackEvent('category_toggle_click', {
+        os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+        provider: calendarType === 'apple' ? 'apple' : 'google',
+        option_basic: currentSelected.includes('1'),
+        option_scholarship: currentSelected.includes('2'),
+        option_event: currentSelected.includes('3'),
+      });
+    }, 0);
   };
 
 
   const handleAdd = () => {
     if (selectedCategories.length > 0) {
+      // calendar_create_click 이벤트 트래킹
+      trackEvent('calendar_create_click', {
+        os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+        provider: calendarType === 'apple' ? 'apple' : 'google',
+        option_basic: selectedCategories.includes('1'),
+        option_scholarship: selectedCategories.includes('2'),
+        option_event: selectedCategories.includes('3'),
+      });
+      
       // onAdd 콜백 호출
       onAdd(selectedCategories);
       
@@ -159,7 +212,13 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
         {/* Header */}
         <div className="header">
           <div className="header-top">
-            <button className="back-button" onClick={onBack} aria-label="이전">
+            <button className="back-button" onClick={() => {
+              trackEvent('back_click', {
+                os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+                provider: calendarType === 'apple' ? 'apple' : 'google',
+              });
+              onBack();
+            }} aria-label="이전">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>

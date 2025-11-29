@@ -6,6 +6,8 @@ import googleCalendarCard from '../assets/google-calendar-card.svg';
 import usersGroupSvg from '../assets/users-group.svg';
 import { share } from '../utils/share';
 import { trackVisitor, getCurrentVisitorCount } from '../utils/visitorCount';
+import { trackEvent } from '../utils/mixpanel';
+import { detectOS } from '../utils/detectOS';
 
 interface HomeIOSProps {
   onCalendarClick: (type: 'apple' | 'google') => void;
@@ -15,6 +17,12 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
   const [visitorCount, setVisitorCount] = useState<number | null>(null); // 초기값 null
 
   useEffect(() => {
+    // home_viewed 이벤트 트래킹
+    const os = detectOS();
+    trackEvent('home_viewed', {
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+    });
+
     // 컴포넌트가 마운트될 때마다 방문자 수 추적 및 가져오기
     // 처음 방문한 경우에만 카운트 증가, 이미 방문한 경우 최신 카운트만 가져오기
     trackVisitor().then(count => {
@@ -31,6 +39,10 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
   }, []);
 
   const handleShare = async () => {
+    const os = detectOS();
+    trackEvent('share_click_home', {
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+    });
     await share();
   };
   return (
@@ -63,13 +75,25 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
               src={appleCalendarCard} 
               alt="애플 캘린더에 추가하기" 
               className="apple-calendar-card"
-              onClick={() => onCalendarClick('apple')}
+              onClick={() => {
+                const os = detectOS();
+                trackEvent('calendar_apple_click', {
+                  os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+                });
+                onCalendarClick('apple');
+              }}
             />
             <img 
               src={googleCalendarCard} 
               alt="구글 캘린더에 추가하기" 
               className="google-calendar-card"
-              onClick={() => onCalendarClick('google')}
+              onClick={() => {
+                const os = detectOS();
+                trackEvent('calendar_google_click', {
+                  os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+                });
+                onCalendarClick('google');
+              }}
             />
           </div>
           {/* Footer - 캘린더 카드 바로 아래 위치 */}
