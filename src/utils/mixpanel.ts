@@ -50,6 +50,12 @@ let hasTrackedHomeViewed = false;
 const SESSION_KEY = 'ssutime_home_viewed_session';
 
 /**
+ * 마지막 이벤트 전송 시간: 타임스탬프 기반 필터링
+ */
+let lastTrackedTime = 0;
+const MIN_INTERVAL_MS = 500; // 500ms 이내 중복 호출 방지
+
+/**
  * home_viewed 이벤트를 원자적으로 한 번만 전송하는 함수
  * Race Condition을 완전히 방지하기 위해 체크와 실행을 한 번에 처리
  * 
@@ -60,6 +66,14 @@ export function trackHomeViewedOnce(
   os: 'ios' | 'android' | 'other',
   isBackNavigation: boolean = false
 ): void {
+  const currentTime = Date.now();
+  
+  // 0. 타임스탬프 기반 필터링: 500ms 이내에 다시 호출되었다면 무시
+  // (가장 먼저 체크하여 빠른 중복 호출 차단)
+  if (currentTime - lastTrackedTime < MIN_INTERVAL_MS) {
+    return;
+  }
+  
   // 1. 초기 로드 시의 중복 실행 방지 (동일 세션 내)
   const isAlreadyTrackedInSession = sessionStorage.getItem(SESSION_KEY) === '1';
   
@@ -93,6 +107,9 @@ export function trackHomeViewedOnce(
       if (!isBackNavigation) {
         sessionStorage.setItem(SESSION_KEY, '1');
       }
+      
+      // 7. 마지막 실행 시간 기록 (타임스탬프 필터링용)
+      lastTrackedTime = currentTime;
     } catch (error) {
       console.error('Mixpanel track error:', error);
       // 에러 발생 시 플래그 롤백
