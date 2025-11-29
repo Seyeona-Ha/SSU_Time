@@ -58,7 +58,6 @@ function App() {
     setCurrentPage('calendar-selection')
     // 뒤로가기 시 home_viewed 이벤트를 위해 전역 변수 리셋
     hasTrackedInitialHome = false
-    homeViewEffectRunCount = 0
   }
 
   const handleBack = () => {
