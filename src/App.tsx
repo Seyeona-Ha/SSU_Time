@@ -29,6 +29,14 @@ function App() {
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
+    // 캘린더 선택 페이지로 이동 시 전역 변수 리셋 (뒤로가기 시 home_viewed 이벤트를 위해)
+    if (typeof window !== 'undefined') {
+      // @ts-ignore - 전역 변수 접근
+      if (window.__hasTrackedInitialHomeViewed !== undefined) {
+        // @ts-ignore
+        window.__hasTrackedInitialHomeViewed = false;
+      }
+    }
   }
 
   const handleBack = () => {
