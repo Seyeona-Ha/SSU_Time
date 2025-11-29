@@ -9,6 +9,9 @@ import './App.css'
 type Page = 'home' | 'calendar-selection'
 type CalendarType = 'apple' | 'google'
 
+// 전역 플래그: 컴포넌트 생명주기와 무관하게 한 번만 실행되도록 보장
+let hasTrackedInitialHomeViewed = false
+
 function App() {
   const [os, setOS] = useState<'ios' | 'android' | 'other'>('other')
   const [currentPage, setCurrentPage] = useState<Page>('home')
@@ -30,29 +33,42 @@ function App() {
   // currentPage가 'home'으로 바뀔 때마다 home_viewed 이벤트 전송
   useEffect(() => {
     if (currentPage === 'home') {
-      const timestampKey = 'home_viewed_timestamp'
-      const lastTimestamp = sessionStorage.getItem(timestampKey)
-      const now = Date.now()
+      const sessionKey = 'home_viewed_tracked'
+      const hasTrackedInSession = sessionStorage.getItem(sessionKey) === '1'
       
-      // 타임스탬프가 없거나 500ms 이상 지났으면 이벤트 전송
-      // (초기 로드이거나 뒤로가기로 돌아온 경우)
-      if (!lastTimestamp || now - parseInt(lastTimestamp) > 500) {
-        // 타임스탬프를 먼저 저장하여 동시 실행 방지
-        sessionStorage.setItem(timestampKey, now.toString())
+      // 초기 로드인 경우: 전역 플래그와 sessionStorage 모두 없으면 이벤트 전송
+      if (!hasTrackedInitialHomeViewed && !hasTrackedInSession) {
+        // 전역 플래그와 sessionStorage 모두 설정하여 중복 실행 방지
+        // 이렇게 하면 useEffect가 여러 번 실행되어도 한 번만 이벤트 전송
+        hasTrackedInitialHomeViewed = true
+        sessionStorage.setItem(sessionKey, '1')
         const detectedOS = detectOS()
         trackEvent('home_viewed', {
           os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
         })
+        return // 초기 로드 완료
       }
-      // 500ms 이내에 다시 실행된 경우는 무시 (중복 방지)
+      
+      // 뒤로가기로 돌아온 경우: sessionStorage는 있지만 전역 플래그가 false
+      // (handleCalendarClick에서 전역 플래그를 리셋했기 때문)
+      if (hasTrackedInSession && !hasTrackedInitialHomeViewed) {
+        const detectedOS = detectOS()
+        trackEvent('home_viewed', {
+          os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
+        })
+        return // 뒤로가기 처리 완료
+      }
+      
+      // 그 외의 경우 (이미 추적됨): 아무것도 하지 않음 (중복 방지)
     }
   }, [currentPage])
 
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
-    // 뒤로가기 시 home_viewed 이벤트를 위해 타임스탬프 리셋
-    sessionStorage.removeItem('home_viewed_timestamp')
+    // 뒤로가기 시 home_viewed 이벤트를 위해 전역 플래그 리셋
+    // sessionStorage는 유지하여 초기 로드와 구분
+    hasTrackedInitialHomeViewed = false
   }
 
   const handleBack = () => {
