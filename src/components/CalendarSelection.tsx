@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import './CalendarSelection.css';
 import requiredBadge from '../assets/required-badge.svg';
 import { share } from '../utils/share';
@@ -75,6 +75,12 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['1']); // 기본 학사일정 자동 선택
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]); // 모든 카테고리를 닫힌 상태로 시작
+  const selectedCategoriesRef = useRef(selectedCategories);
+  
+  // selectedCategories가 변경될 때마다 ref 업데이트
+  useEffect(() => {
+    selectedCategoriesRef.current = selectedCategories;
+  }, [selectedCategories]);
 
   /**
    * 선택된 카테고리 조합에 따라 캘린더 URL을 매핑합니다.
@@ -129,9 +135,11 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     );
     
     // category_expand_click 이벤트 트래킹
-    const optionBasic = selectedCategories.includes('1');
-    const optionScholarship = selectedCategories.includes('2');
-    const optionEvent = selectedCategories.includes('3');
+    // ref를 사용하여 최신 선택 상태 반영
+    const currentSelected = selectedCategoriesRef.current;
+    const optionBasic = currentSelected.includes('1');
+    const optionScholarship = currentSelected.includes('2');
+    const optionEvent = currentSelected.includes('3');
     
     trackEvent('category_expand_click', {
       os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',

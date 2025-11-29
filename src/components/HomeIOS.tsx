@@ -6,14 +6,8 @@ import googleCalendarCard from '../assets/google-calendar-card.svg';
 import usersGroupSvg from '../assets/users-group.svg';
 import { share } from '../utils/share';
 import { trackVisitor, getCurrentVisitorCount } from '../utils/visitorCount';
-import { trackEvent } from '../utils/mixpanel';
 import { detectOS } from '../utils/detectOS';
 
-// 전역 변수로 초기 로드 추적 (StrictMode 대응)
-// window 객체에 저장하여 App.tsx에서도 접근 가능하도록
-if (typeof window !== 'undefined' && (window as any).__hasTrackedInitialHomeViewed === undefined) {
-  (window as any).__hasTrackedInitialHomeViewed = false;
-}
 
 interface HomeIOSProps {
   onCalendarClick: (type: 'apple' | 'google') => void;
@@ -23,25 +17,7 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
   const [visitorCount, setVisitorCount] = useState<number | null>(null); // 초기값 null
 
   useEffect(() => {
-    // home_viewed 이벤트 트래킹
-    const hasTracked = (window as any).__hasTrackedInitialHomeViewed;
-    
-    if (!hasTracked) {
-      // 초기 로드 시 한 번만 이벤트 전송 (StrictMode 대응)
-      (window as any).__hasTrackedInitialHomeViewed = true;
-      const os = detectOS();
-      trackEvent('home_viewed', {
-        os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
-      });
-    } else {
-      // 뒤로가기로 돌아온 경우 (App.tsx에서 전역 변수가 리셋됨)
-      const os = detectOS();
-      trackEvent('home_viewed', {
-        os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
-      });
-      // 다시 true로 설정하여 중복 방지
-      (window as any).__hasTrackedInitialHomeViewed = true;
-    }
+    // home_viewed 이벤트는 App.tsx에서 처리
 
     // 컴포넌트가 마운트될 때마다 방문자 수 추적 및 가져오기
     // 처음 방문한 경우에만 카운트 증가, 이미 방문한 경우 최신 카운트만 가져오기
@@ -59,6 +35,7 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
   }, []);
 
   const handleShare = async () => {
+    const { trackEvent } = await import('../utils/mixpanel');
     const os = detectOS();
     trackEvent('share_click_home', {
       os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
@@ -95,7 +72,8 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
               src={appleCalendarCard} 
               alt="애플 캘린더에 추가하기" 
               className="apple-calendar-card"
-              onClick={() => {
+              onClick={async () => {
+                const { trackEvent } = await import('../utils/mixpanel');
                 const os = detectOS();
                 trackEvent('calendar_apple_click', {
                   os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
@@ -107,7 +85,8 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
               src={googleCalendarCard} 
               alt="구글 캘린더에 추가하기" 
               className="google-calendar-card"
-              onClick={() => {
+              onClick={async () => {
+                const { trackEvent } = await import('../utils/mixpanel');
                 const os = detectOS();
                 trackEvent('calendar_google_click', {
                   os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',

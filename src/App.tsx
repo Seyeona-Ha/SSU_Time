@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { detectOS } from './utils/detectOS'
 import HomeIOS from './components/HomeIOS'
 import HomeAndroid from './components/HomeAndroid'
 import CalendarSelection from './components/CalendarSelection'
+import { trackEvent } from './utils/mixpanel'
 import './App.css'
 
 type Page = 'home' | 'calendar-selection'
@@ -12,6 +13,7 @@ function App() {
   const [os, setOS] = useState<'ios' | 'android' | 'other'>('other')
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [selectedCalendarType, setSelectedCalendarType] = useState<CalendarType>('google')
+  const hasTrackedInitialHome = useRef(false)
 
   useEffect(() => {
     // 개발 환경에서 URL 파라미터로 OS 강제 설정 (예: ?os=ios 또는 ?os=android)
@@ -26,17 +28,32 @@ function App() {
     }
   }, [])
 
+  // currentPage가 'home'으로 바뀔 때마다 home_viewed 이벤트 전송
+  useEffect(() => {
+    if (currentPage === 'home') {
+      // 초기 로드 시에만 중복 방지 (StrictMode 대응)
+      if (!hasTrackedInitialHome.current) {
+        hasTrackedInitialHome.current = true
+      } else {
+        // 뒤로가기로 돌아온 경우
+        const detectedOS = detectOS()
+        trackEvent('home_viewed', {
+          os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
+        })
+        return
+      }
+      
+      // 초기 로드 시 이벤트 전송
+      const detectedOS = detectOS()
+      trackEvent('home_viewed', {
+        os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
+      })
+    }
+  }, [currentPage])
+
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
-    // 캘린더 선택 페이지로 이동 시 전역 변수 리셋 (뒤로가기 시 home_viewed 이벤트를 위해)
-    if (typeof window !== 'undefined') {
-      // @ts-ignore - 전역 변수 접근
-      if (window.__hasTrackedInitialHomeViewed !== undefined) {
-        // @ts-ignore
-        window.__hasTrackedInitialHomeViewed = false;
-      }
-    }
   }
 
   const handleBack = () => {
