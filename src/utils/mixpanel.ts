@@ -95,28 +95,23 @@ export function trackHomeViewedOnce(
   // 4. Race Condition 방지: 플래그를 가장 먼저 설정하여 다른 호출을 바로 막음
   hasTrackedHomeViewed = true;
   
-  // 5. 이벤트 전송 조건: OS 감지가 완료된 후(os !== 'other')에만 전송
-  if (os !== 'other') {
-    try {
-      mixpanel.track('home_viewed', {
-        os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
-        is_initial_load: !isBackNavigation,
-      });
-      
-      // 6. 세션 기록 (뒤로 가기 방지)
-      if (!isBackNavigation) {
-        sessionStorage.setItem(SESSION_KEY, '1');
-      }
-      
-      // 7. 마지막 실행 시간 기록 (타임스탬프 필터링용)
-      lastTrackedTime = currentTime;
-    } catch (error) {
-      console.error('Mixpanel track error:', error);
-      // 에러 발생 시 플래그 롤백
-      hasTrackedHomeViewed = false;
+  // 5. 이벤트 전송: 모든 OS에서 전송 (ios, android, other 모두 포함)
+  try {
+    mixpanel.track('home_viewed', {
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+      is_initial_load: !isBackNavigation,
+    });
+    
+    // 6. 세션 기록 (뒤로 가기 방지)
+    if (!isBackNavigation) {
+      sessionStorage.setItem(SESSION_KEY, '1');
     }
-  } else {
-    // os가 'other'인 경우 플래그를 롤백하여 2차 렌더링(OS 감지 후)을 허용
+    
+    // 7. 마지막 실행 시간 기록 (타임스탬프 필터링용)
+    lastTrackedTime = currentTime;
+  } catch (error) {
+    console.error('Mixpanel track error:', error);
+    // 에러 발생 시 플래그 롤백
     hasTrackedHomeViewed = false;
   }
 }

@@ -181,3 +181,4 @@ useEffect(() => {
 - 배포 환경: Vercel
 - 테스트 환경: iOS Safari, Android Chrome
 
+
