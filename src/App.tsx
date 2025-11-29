@@ -26,25 +26,9 @@ function App() {
     }
   }, [])
 
-  // currentPage가 'home'일 때 home_viewed 이벤트 전송
-  // 원자적 함수를 사용하여 Race Condition 완전 방지
-  useEffect(() => {
-    if (currentPage === 'home') {
-      // os 상태가 'other'에서 벗어났을 때만 함수를 호출하도록 보장
-      // 뒤로가기인지 확인 (sessionStorage에 이미 기록이 있는지)
-      const SESSION_KEY = 'ssutime_home_viewed_session'
-      const isBackNavigation = sessionStorage.getItem(SESSION_KEY) === '1'
-      
-      trackHomeViewedOnce(os, isBackNavigation)
-    }
-  }, [currentPage, os])  // os 상태 변화에 집중
-
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
-    // 뒤로가기 시 home_viewed 이벤트를 위해 전역 플래그만 리셋
-    // sessionStorage는 유지하여 초기 로드와 구분
-    resetHomeViewedFlag()
   }
 
   const handleBack = () => {
