@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import './HomeIOS.css';
 import logoSvg from '../assets/logo.svg';
 import appleCalendarCard from '../assets/apple-calendar-card.svg';
@@ -9,22 +9,39 @@ import { trackVisitor, getCurrentVisitorCount } from '../utils/visitorCount';
 import { trackEvent } from '../utils/mixpanel';
 import { detectOS } from '../utils/detectOS';
 
+// 전역 변수로 초기 로드 추적 (StrictMode 대응)
+let hasTrackedInitialHomeViewed = false;
+let homeViewMountCount = 0;
+
 interface HomeIOSProps {
   onCalendarClick: (type: 'apple' | 'google') => void;
 }
 
 function HomeIOS({ onCalendarClick }: HomeIOSProps) {
   const [visitorCount, setVisitorCount] = useState<number | null>(null); // 초기값 null
-  const hasTrackedHomeViewed = useRef(false);
 
   useEffect(() => {
-    // home_viewed 이벤트 트래킹 (첫 마운트 시에만)
-    if (!hasTrackedHomeViewed.current) {
+    homeViewMountCount++;
+    
+    // home_viewed 이벤트 트래킹
+    // 초기 로드 시: 첫 번째와 두 번째 마운트 모두 무시 (StrictMode)
+    // 뒤로가기로 돌아올 때: 마운트 카운트가 증가하므로 이벤트 전송
+    if (homeViewMountCount <= 2 && !hasTrackedInitialHomeViewed) {
+      // StrictMode로 인한 첫 두 번의 마운트는 무시
+      if (homeViewMountCount === 2) {
+        hasTrackedInitialHomeViewed = true;
+        // 두 번째 마운트에서 한 번만 이벤트 전송
+        const os = detectOS();
+        trackEvent('home_viewed', {
+          os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+        });
+      }
+    } else if (homeViewMountCount > 2) {
+      // 뒤로가기로 돌아온 경우
       const os = detectOS();
       trackEvent('home_viewed', {
         os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
       });
-      hasTrackedHomeViewed.current = true;
     }
 
     // 컴포넌트가 마운트될 때마다 방문자 수 추적 및 가져오기
