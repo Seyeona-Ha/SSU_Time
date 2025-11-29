@@ -34,7 +34,6 @@ function App() {
   useEffect(() => {
     if (currentPage === 'home') {
       const sessionKey = 'home_viewed_tracked'
-      const now = Date.now()
       
       // sessionStorage를 먼저 확인하여 초기 로드인지 뒤로가기인지 구분
       const hasTrackedInSession = sessionStorage.getItem(sessionKey) === '1'
