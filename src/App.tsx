@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { detectOS } from './utils/detectOS'
 import HomeIOS from './components/HomeIOS'
 import HomeAndroid from './components/HomeAndroid'
@@ -9,11 +9,14 @@ import './App.css'
 type Page = 'home' | 'calendar-selection'
 type CalendarType = 'apple' | 'google'
 
+// 모듈 레벨 전역 변수로 초기 로드 추적
+let hasTrackedInitialHome = false
+
+
 function App() {
   const [os, setOS] = useState<'ios' | 'android' | 'other'>('other')
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [selectedCalendarType, setSelectedCalendarType] = useState<CalendarType>('google')
-  const hasTrackedInitialHome = useRef(false)
 
   useEffect(() => {
     // 개발 환경에서 URL 파라미터로 OS 강제 설정 (예: ?os=ios 또는 ?os=android)
@@ -31,29 +34,31 @@ function App() {
   // currentPage가 'home'으로 바뀔 때마다 home_viewed 이벤트 전송
   useEffect(() => {
     if (currentPage === 'home') {
-      // 초기 로드 시에만 중복 방지 (StrictMode 대응)
-      if (!hasTrackedInitialHome.current) {
-        hasTrackedInitialHome.current = true
+      if (!hasTrackedInitialHome) {
+        // 초기 로드 시: sessionStorage에 먼저 설정하여 두 번째 실행 방지
+        const sessionKey = 'home_viewed_tracked'
+        sessionStorage.setItem(sessionKey, '1')
+        hasTrackedInitialHome = true
+        const detectedOS = detectOS()
+        trackEvent('home_viewed', {
+          os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
+        })
       } else {
         // 뒤로가기로 돌아온 경우
         const detectedOS = detectOS()
         trackEvent('home_viewed', {
           os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
         })
-        return
       }
-      
-      // 초기 로드 시 이벤트 전송
-      const detectedOS = detectOS()
-      trackEvent('home_viewed', {
-        os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
-      })
     }
   }, [currentPage])
 
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
+    // 뒤로가기 시 home_viewed 이벤트를 위해 전역 변수 리셋
+    hasTrackedInitialHome = false
+    homeViewEffectRunCount = 0
   }
 
   const handleBack = () => {

@@ -25,14 +25,6 @@ interface CalendarCategory {
 
 function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionProps) {
   const os = useMemo(() => detectOS(), []);
-  
-  // calendar_selection_viewed 이벤트 트래킹
-  useEffect(() => {
-    trackEvent('calendar_selection_viewed', {
-      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
-      provider: calendarType === 'apple' ? 'apple' : 'google',
-    });
-  }, [os, calendarType]);
 
   const handleShare = async () => {
     trackEvent('share_click_selection', {
@@ -81,6 +73,14 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
   useEffect(() => {
     selectedCategoriesRef.current = selectedCategories;
   }, [selectedCategories]);
+
+  // calendar_selection_viewed 이벤트 트래킹
+  useEffect(() => {
+    trackEvent('calendar_selection_viewed', {
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+      provider: calendarType === 'apple' ? 'apple' : 'google',
+    });
+  }, [os, calendarType]);
 
   /**
    * 선택된 카테고리 조합에 따라 캘린더 URL을 매핑합니다.
@@ -135,24 +135,23 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     );
     
     // category_expand_click 이벤트 트래킹
-    // ref를 사용하여 최신 선택 상태 반영
-    const currentSelected = selectedCategoriesRef.current;
-    const optionBasic = currentSelected.includes('1');
-    const optionScholarship = currentSelected.includes('2');
-    const optionEvent = currentSelected.includes('3');
+    // 카테고리 ID를 calendar_category로 변환: '1' = "standard", '2' = "scholarship", '3' = "event"
+    const categoryMap: Record<string, string> = {
+      '1': 'standard',
+      '2': 'scholarship',
+      '3': 'event',
+    };
+    const calendarCategory = categoryMap[categoryId] || 'standard';
     
     trackEvent('category_expand_click', {
       os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
       provider: calendarType === 'apple' ? 'apple' : 'google',
-      option_basic: optionBasic,
-      option_scholarship: optionScholarship,
-      option_event: optionEvent,
+      calendar_category: calendarCategory,
     });
   };
 
   const toggleSelectCategory = (categoryId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const willBeSelected = !selectedCategories.includes(categoryId);
     setSelectedCategories(prev => 
       prev.includes(categoryId)
         ? prev.filter(id => id !== categoryId)
@@ -160,20 +159,19 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     );
     
     // category_toggle_click 이벤트 트래킹
-    // 업데이트된 선택 상태를 반영하기 위해 약간의 지연 후 트래킹
-    setTimeout(() => {
-      const currentSelected = willBeSelected
-        ? [...selectedCategories, categoryId]
-        : selectedCategories.filter(id => id !== categoryId);
-      
-      trackEvent('category_toggle_click', {
-        os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
-        provider: calendarType === 'apple' ? 'apple' : 'google',
-        option_basic: currentSelected.includes('1'),
-        option_scholarship: currentSelected.includes('2'),
-        option_event: currentSelected.includes('3'),
-      });
-    }, 0);
+    // 카테고리 ID를 calendar_category로 변환: '1' = "standard", '2' = "scholarship", '3' = "event"
+    const categoryMap: Record<string, string> = {
+      '1': 'standard',
+      '2': 'scholarship',
+      '3': 'event',
+    };
+    const calendarCategory = categoryMap[categoryId] || 'standard';
+    
+    trackEvent('category_toggle_click', {
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+      provider: calendarType === 'apple' ? 'apple' : 'google',
+      calendar_category: calendarCategory,
+    });
   };
 
 
