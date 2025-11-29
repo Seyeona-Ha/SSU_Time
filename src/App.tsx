@@ -9,9 +9,6 @@ import './App.css'
 type Page = 'home' | 'calendar-selection'
 type CalendarType = 'apple' | 'google'
 
-// 전역 플래그: 컴포넌트 생명주기와 무관하게 한 번만 실행되도록 보장
-let hasTrackedInitialHomeViewed = false
-
 function App() {
   const [os, setOS] = useState<'ios' | 'android' | 'other'>('other')
   const [currentPage, setCurrentPage] = useState<Page>('home')
@@ -34,41 +31,66 @@ function App() {
   useEffect(() => {
     if (currentPage === 'home') {
       const sessionKey = 'home_viewed_tracked'
-      const hasTrackedInSession = sessionStorage.getItem(sessionKey) === '1'
+      const lockKey = 'home_viewed_lock'
+      const now = Date.now()
       
-      // 초기 로드인 경우: 전역 플래그와 sessionStorage 모두 없으면 이벤트 전송
-      if (!hasTrackedInitialHomeViewed && !hasTrackedInSession) {
-        // 전역 플래그와 sessionStorage 모두 설정하여 중복 실행 방지
-        // 이렇게 하면 useEffect가 여러 번 실행되어도 한 번만 이벤트 전송
-        hasTrackedInitialHomeViewed = true
+      // 락(lock)을 먼저 확인하고 설정
+      const existingLock = sessionStorage.getItem(lockKey)
+      
+      // 초기 로드인 경우: 락이 없으면
+      if (!existingLock) {
+        // 고유한 락 ID 생성 (타임스탬프 + 랜덤)
+        const lockId = `${now}-${Math.random().toString(36).substr(2, 9)}`
+        
+        // 락을 먼저 설정 (동기적으로)
+        sessionStorage.setItem(lockKey, lockId)
         sessionStorage.setItem(sessionKey, '1')
+        
+        // 설정 후 즉시 다시 확인하여 동시 실행 방지
+        // 만약 다른 useEffect가 이미 설정했다면 락 ID가 다를 수 있음
+        const recheckLock = sessionStorage.getItem(lockKey)
+        
+        // 락이 방금 설정한 것과 같으면 이벤트 전송
+        // (동시 실행 시 한 번만 이벤트 전송)
+        if (recheckLock === lockId) {
+          const detectedOS = detectOS()
+          trackEvent('home_viewed', {
+            os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
+            is_initial_load: true, // 초기 진입 구분
+          })
+          // 이벤트 전송 후 락 해제 (100ms 후)
+          setTimeout(() => {
+            const currentLock = sessionStorage.getItem(lockKey)
+            if (currentLock === lockId) {
+              sessionStorage.removeItem(lockKey)
+            }
+          }, 100)
+        }
+        return
+      }
+      
+      // 뒤로가기로 돌아온 경우: sessionKey가 있고 락이 없거나 오래된 경우
+      if (sessionStorage.getItem(sessionKey) === '1' && (!existingLock || (now - parseInt(existingLock.split('-')[0])) > 1000)) {
+        // 락을 제거하고 이벤트 전송
+        sessionStorage.removeItem(lockKey)
         const detectedOS = detectOS()
         trackEvent('home_viewed', {
           os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
+          is_initial_load: false, // 뒤로가기로 돌아온 경우 구분
         })
-        return // 초기 로드 완료
+        return
       }
       
-      // 뒤로가기로 돌아온 경우: sessionStorage는 있지만 전역 플래그가 false
-      // (handleCalendarClick에서 전역 플래그를 리셋했기 때문)
-      if (hasTrackedInSession && !hasTrackedInitialHomeViewed) {
-        const detectedOS = detectOS()
-        trackEvent('home_viewed', {
-          os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
-        })
-        return // 뒤로가기 처리 완료
-      }
-      
-      // 그 외의 경우 (이미 추적됨): 아무것도 하지 않음 (중복 방지)
+      // 그 외의 경우 (락이 있는 경우): 무시 (중복 방지)
     }
   }, [currentPage])
 
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
-    // 뒤로가기 시 home_viewed 이벤트를 위해 전역 플래그 리셋
-    // sessionStorage는 유지하여 초기 로드와 구분
-    hasTrackedInitialHomeViewed = false
+    // 뒤로가기 시 home_viewed 이벤트를 위해 락만 제거
+    // sessionKey는 유지하여 초기 로드와 구분
+    sessionStorage.removeItem('home_viewed_lock')
   }
 
   const handleBack = () => {
