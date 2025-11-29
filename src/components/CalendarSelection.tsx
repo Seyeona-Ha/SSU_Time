@@ -128,6 +128,9 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
     [...categoryIds].sort().join(',');
 
   const toggleExpandCategory = (categoryId: string) => {
+    // 클릭 후 상태를 미리 계산 (현재는 닫혀있으면 열리고, 열려있으면 닫힘)
+    const willBeExpanded = !expandedCategories.includes(categoryId);
+    
     setExpandedCategories(prev =>
       prev.includes(categoryId)
         ? prev.filter(id => id !== categoryId)
@@ -147,11 +150,15 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
       provider: calendarType === 'apple' ? 'apple' : 'google',
       calendar_category: calendarCategory,
+      is_expanded: willBeExpanded,
     });
   };
 
   const toggleSelectCategory = (categoryId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    // 클릭 후 상태를 미리 계산 (현재는 선택되어있으면 해제되고, 해제되어있으면 선택됨)
+    const willBeSelected = !selectedCategories.includes(categoryId);
+    
     setSelectedCategories(prev => 
       prev.includes(categoryId)
         ? prev.filter(id => id !== categoryId)
@@ -171,6 +178,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
       provider: calendarType === 'apple' ? 'apple' : 'google',
       calendar_category: calendarCategory,
+      is_selected: willBeSelected,
     });
   };
 

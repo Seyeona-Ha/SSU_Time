@@ -9,10 +9,6 @@ import './App.css'
 type Page = 'home' | 'calendar-selection'
 type CalendarType = 'apple' | 'google'
 
-// 모듈 레벨 전역 변수로 초기 로드 추적
-let hasTrackedInitialHome = false
-
-
 function App() {
   const [os, setOS] = useState<'ios' | 'android' | 'other'>('other')
   const [currentPage, setCurrentPage] = useState<Page>('home')
@@ -34,30 +30,29 @@ function App() {
   // currentPage가 'home'으로 바뀔 때마다 home_viewed 이벤트 전송
   useEffect(() => {
     if (currentPage === 'home') {
-      if (!hasTrackedInitialHome) {
-        // 초기 로드 시: sessionStorage에 먼저 설정하여 두 번째 실행 방지
-        const sessionKey = 'home_viewed_tracked'
-        sessionStorage.setItem(sessionKey, '1')
-        hasTrackedInitialHome = true
-        const detectedOS = detectOS()
-        trackEvent('home_viewed', {
-          os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
-        })
-      } else {
-        // 뒤로가기로 돌아온 경우
+      const timestampKey = 'home_viewed_timestamp'
+      const lastTimestamp = sessionStorage.getItem(timestampKey)
+      const now = Date.now()
+      
+      // 타임스탬프가 없거나 500ms 이상 지났으면 이벤트 전송
+      // (초기 로드이거나 뒤로가기로 돌아온 경우)
+      if (!lastTimestamp || now - parseInt(lastTimestamp) > 500) {
+        // 타임스탬프를 먼저 저장하여 동시 실행 방지
+        sessionStorage.setItem(timestampKey, now.toString())
         const detectedOS = detectOS()
         trackEvent('home_viewed', {
           os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
         })
       }
+      // 500ms 이내에 다시 실행된 경우는 무시 (중복 방지)
     }
   }, [currentPage])
 
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
-    // 뒤로가기 시 home_viewed 이벤트를 위해 전역 변수 리셋
-    hasTrackedInitialHome = false
+    // 뒤로가기 시 home_viewed 이벤트를 위해 타임스탬프 리셋
+    sessionStorage.removeItem('home_viewed_timestamp')
   }
 
   const handleBack = () => {
