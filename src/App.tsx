@@ -3,14 +3,11 @@ import { detectOS } from './utils/detectOS'
 import HomeIOS from './components/HomeIOS'
 import HomeAndroid from './components/HomeAndroid'
 import CalendarSelection from './components/CalendarSelection'
-import { trackEvent } from './utils/mixpanel'
+import { trackHomeViewedOnce, resetHomeViewedFlag } from './utils/mixpanel'
 import './App.css'
 
 type Page = 'home' | 'calendar-selection'
 type CalendarType = 'apple' | 'google'
-
-// 전역 플래그: 모듈 레벨에서 초기 로드 추적 (컴포넌트 재렌더링과 무관)
-let hasTrackedInitialHomeViewed = false
 
 function App() {
   const [os, setOS] = useState<'ios' | 'android' | 'other'>('other')
@@ -30,49 +27,25 @@ function App() {
     }
   }, [])
 
-  // currentPage가 'home'으로 바뀔 때마다 home_viewed 이벤트 전송
-  // 핵심: os 상태 변경이 완료된 후(os !== 'other')에만 실행
-  // 이렇게 하면 1차 렌더링(os='other')은 통과하고, 2차 재렌더링(os='ios' 또는 'android')에서만 이벤트 로직이 실행됩니다
+  // currentPage가 'home'일 때 home_viewed 이벤트 전송
+  // 원자적 함수를 사용하여 Race Condition 완전 방지
   useEffect(() => {
-    if (currentPage === 'home' && os !== 'other') {
-      const sessionKey = 'home_viewed_tracked'
-      const hasTrackedInSession = sessionStorage.getItem(sessionKey) === '1'
+    if (currentPage === 'home') {
+      // os 상태가 'other'에서 벗어났을 때만 함수를 호출하도록 보장
+      // 뒤로가기인지 확인 (sessionStorage에 이미 기록이 있는지)
+      const SESSION_KEY = 'ssutime_home_viewed_session'
+      const isBackNavigation = sessionStorage.getItem(SESSION_KEY) === '1'
       
-      // 초기 로드인 경우: 전역 플래그와 sessionStorage 모두 확인
-      if (!hasTrackedInSession && !hasTrackedInitialHomeViewed) {
-        // sessionStorage를 먼저 설정 (동기적으로)
-        sessionStorage.setItem(sessionKey, '1')
-        
-        // 전역 플래그도 설정
-        hasTrackedInitialHomeViewed = true
-        
-        // 이벤트 전송
-        trackEvent('home_viewed', {
-          os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
-          is_initial_load: true, // 초기 진입 구분
-        })
-        return
-      }
-      
-      // 뒤로가기로 돌아온 경우: sessionKey가 있지만 전역 플래그가 false인 경우
-      if (hasTrackedInSession && !hasTrackedInitialHomeViewed) {
-        trackEvent('home_viewed', {
-          os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
-          is_initial_load: false, // 뒤로가기로 돌아온 경우 구분
-        })
-        return
-      }
-      
-      // 그 외의 경우 (이미 추적됨): 무시 (중복 방지)
+      trackHomeViewedOnce(os, isBackNavigation)
     }
-  }, [currentPage, os])  // os를 의존성에 명시하여 상태 변화를 추적
+  }, [currentPage, os])  // os 상태 변화에 집중
 
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
     // 뒤로가기 시 home_viewed 이벤트를 위해 전역 플래그만 리셋
     // sessionStorage는 유지하여 초기 로드와 구분
-    hasTrackedInitialHomeViewed = false
+    resetHomeViewedFlag()
   }
 
   const handleBack = () => {
