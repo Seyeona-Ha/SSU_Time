@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { detectOS } from './utils/detectOS'
 import HomeIOS from './components/HomeIOS'
 import HomeAndroid from './components/HomeAndroid'
@@ -9,13 +9,13 @@ import './App.css'
 type Page = 'home' | 'calendar-selection'
 type CalendarType = 'apple' | 'google'
 
+// 전역 플래그: 모듈 레벨에서 초기 로드 추적 (컴포넌트 재렌더링과 무관)
+let hasTrackedInitialHomeViewed = false
+
 function App() {
   const [os, setOS] = useState<'ios' | 'android' | 'other'>('other')
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [selectedCalendarType, setSelectedCalendarType] = useState<CalendarType>('google')
-  
-  // useRef로 컴포넌트 인스턴스 레벨에서 초기 로드 추적
-  const hasTrackedInitialLoadRef = useRef(false)
 
   useEffect(() => {
     // 개발 환경에서 URL 파라미터로 OS 강제 설정 (예: ?os=ios 또는 ?os=android)
@@ -31,41 +31,33 @@ function App() {
   }, [])
 
   // currentPage가 'home'으로 바뀔 때마다 home_viewed 이벤트 전송
+  // 핵심: os 상태 변경이 완료된 후(os !== 'other')에만 실행
+  // 이렇게 하면 1차 렌더링(os='other')은 통과하고, 2차 재렌더링(os='ios' 또는 'android')에서만 이벤트 로직이 실행됩니다
   useEffect(() => {
-    if (currentPage === 'home') {
+    if (currentPage === 'home' && os !== 'other') {
       const sessionKey = 'home_viewed_tracked'
-      
-      // sessionStorage를 먼저 확인하여 초기 로드인지 뒤로가기인지 구분
       const hasTrackedInSession = sessionStorage.getItem(sessionKey) === '1'
       
-      // 초기 로드인 경우: sessionStorage와 useRef 모두 확인
-      if (!hasTrackedInSession && !hasTrackedInitialLoadRef.current) {
+      // 초기 로드인 경우: 전역 플래그와 sessionStorage 모두 확인
+      if (!hasTrackedInSession && !hasTrackedInitialHomeViewed) {
         // sessionStorage를 먼저 설정 (동기적으로)
         sessionStorage.setItem(sessionKey, '1')
         
-        // useRef도 설정
-        hasTrackedInitialLoadRef.current = true
+        // 전역 플래그도 설정
+        hasTrackedInitialHomeViewed = true
         
-        // 설정 후 즉시 다시 확인하여 동시 실행 방지
-        const recheckSession = sessionStorage.getItem(sessionKey) === '1'
-        
-        // sessionStorage가 설정되었고 useRef도 true이면 이벤트 전송
-        // (동시 실행 시 한 번만 이벤트 전송)
-        if (recheckSession && hasTrackedInitialLoadRef.current) {
-          const detectedOS = detectOS()
-          trackEvent('home_viewed', {
-            os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
-            is_initial_load: true, // 초기 진입 구분
-          })
-        }
+        // 이벤트 전송
+        trackEvent('home_viewed', {
+          os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+          is_initial_load: true, // 초기 진입 구분
+        })
         return
       }
       
-      // 뒤로가기로 돌아온 경우: sessionKey가 있지만 useRef가 false인 경우
-      if (hasTrackedInSession && !hasTrackedInitialLoadRef.current) {
-        const detectedOS = detectOS()
+      // 뒤로가기로 돌아온 경우: sessionKey가 있지만 전역 플래그가 false인 경우
+      if (hasTrackedInSession && !hasTrackedInitialHomeViewed) {
         trackEvent('home_viewed', {
-          os: detectedOS === 'ios' ? 'ios' : detectedOS === 'android' ? 'android' : 'other',
+          os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
           is_initial_load: false, // 뒤로가기로 돌아온 경우 구분
         })
         return
@@ -73,14 +65,14 @@ function App() {
       
       // 그 외의 경우 (이미 추적됨): 무시 (중복 방지)
     }
-  }, [currentPage])
+  }, [currentPage, os])  // os를 의존성에 명시하여 상태 변화를 추적
 
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
-    // 뒤로가기 시 home_viewed 이벤트를 위해 useRef만 리셋
+    // 뒤로가기 시 home_viewed 이벤트를 위해 전역 플래그만 리셋
     // sessionStorage는 유지하여 초기 로드와 구분
-    hasTrackedInitialLoadRef.current = false
+    hasTrackedInitialHomeViewed = false
   }
 
   const handleBack = () => {
