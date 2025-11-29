@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './HomeIOS.css';
 import logoSvg from '../assets/logo.svg';
 import appleCalendarCard from '../assets/apple-calendar-card.svg';
@@ -15,13 +15,17 @@ interface HomeIOSProps {
 
 function HomeIOS({ onCalendarClick }: HomeIOSProps) {
   const [visitorCount, setVisitorCount] = useState<number | null>(null); // 초기값 null
+  const hasTrackedHomeViewed = useRef(false);
 
   useEffect(() => {
-    // home_viewed 이벤트 트래킹
-    const os = detectOS();
-    trackEvent('home_viewed', {
-      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
-    });
+    // home_viewed 이벤트 트래킹 (첫 마운트 시에만)
+    if (!hasTrackedHomeViewed.current) {
+      const os = detectOS();
+      trackEvent('home_viewed', {
+        os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+      });
+      hasTrackedHomeViewed.current = true;
+    }
 
     // 컴포넌트가 마운트될 때마다 방문자 수 추적 및 가져오기
     // 처음 방문한 경우에만 카운트 증가, 이미 방문한 경우 최신 카운트만 가져오기
