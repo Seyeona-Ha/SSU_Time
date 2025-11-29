@@ -3,7 +3,6 @@ import { detectOS } from './utils/detectOS'
 import HomeIOS from './components/HomeIOS'
 import HomeAndroid from './components/HomeAndroid'
 import CalendarSelection from './components/CalendarSelection'
-import { trackHomeViewedOnce, resetHomeViewedFlag } from './utils/mixpanel'
 import './App.css'
 
 type Page = 'home' | 'calendar-selection'
