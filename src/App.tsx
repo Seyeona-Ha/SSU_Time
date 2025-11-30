@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { detectOS } from './utils/detectOS'
 import HomeIOS from './components/HomeIOS'
 import HomeAndroid from './components/HomeAndroid'
 import CalendarSelection from './components/CalendarSelection'
+import { trackViewHomeOnce } from './utils/mixpanel'
 import './App.css'
 
 type Page = 'home' | 'calendar-selection'
@@ -12,6 +13,7 @@ function App() {
   const [os, setOS] = useState<'ios' | 'android' | 'other'>('other')
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [selectedCalendarType, setSelectedCalendarType] = useState<CalendarType>('google')
+  const isInitialMountRef = useRef(true)
 
   useEffect(() => {
     // 개발 환경에서 URL 파라미터로 OS 강제 설정 (예: ?os=ios 또는 ?os=android)
@@ -26,13 +28,43 @@ function App() {
     }
   }, [])
 
+  // 홈 화면 진입 시 view_home 이벤트 트래킹
+  useEffect(() => {
+    // OS가 아직 감지되지 않았으면 대기
+    if (os === 'other' && !window.location.search.includes('os=')) {
+      return
+    }
+
+    // currentPage가 'home'일 때만 트래킹
+    if (currentPage !== 'home') {
+      return
+    }
+
+    // OS 값 결정 (other인 경우에도 트래킹)
+    const osValue = os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other'
+    
+    // 초기 마운트인지 확인 (첫 렌더링인 경우에만 true)
+    const isInitial = isInitialMountRef.current
+    
+    // 이벤트 트래킹
+    trackViewHomeOnce(osValue, isInitial)
+    
+    // 초기 마운트 플래그 업데이트 (한 번만 false로 변경)
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false
+    }
+  }, [currentPage, os])
+
   const handleCalendarClick = (type: CalendarType) => {
     setSelectedCalendarType(type)
     setCurrentPage('calendar-selection')
   }
 
   const handleBack = () => {
+    // 뒤로가기로 홈 화면으로 돌아올 때는 initial: false로 트래킹
     setCurrentPage('home')
+    // currentPage가 'home'으로 변경되면 useEffect에서 자동으로 트래킹됨
+    // 이때 isInitialMountRef.current는 false이므로 initial: false로 전송됨
   }
 
   const handleAdd = (selectedCategories: string[]) => {
