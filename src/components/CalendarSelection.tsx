@@ -234,9 +234,9 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
             }
             
             // 상대 경로인 경우 절대 경로로 변환
-            const calendarUrl = location.startsWith('http')
+            const calendarUrl = location.startsWith('webcal')
               ? location
-              : `https://api.ssutime.yourssu.com${location}`;
+              : `webcal://api.ssutime.yourssu.com${location}`;
             
             // Android 딥링크 처리
             if (calendarType === 'google' && os === 'android') {
