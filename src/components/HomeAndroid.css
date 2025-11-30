@@ -128,11 +128,11 @@
 /* Chat Button - 상하 애니메이션 (경쾌하게 뛰듯이) */
 /* 위치 조정: top (위/아래), left (왼쪽/오른쪽) 값을 변경하세요 */
 .home-android .chat-button-animated {
-  width: 60px; /* Figma width: 60px */
-  height: 34px; /* Figma height: 34px */
+  width: 60px; /* SVG width: 60px */
+  height: 34px; /* SVG height: 34px (iOS와 동일) */
   position: absolute;
-  top: -50px; /* 위로 올리려면 음수 값 증가 (예: -30px), 아래로 내리려면 음수 값 감소 (예: -10px) */
-  left: calc(50% + 30px); /* 오른쪽으로 이동하려면 숫자 증가 (예: +20px), 왼쪽으로 이동하려면 숫자 감소 (예: +5px) */
+  top: -20px; /* 위로 올리려면 음수 값 증가 (예: -30px), 아래로 내리려면 음수 값 감소 (예: -10px) */
+  left: calc(50% + 20px); /* 오른쪽으로 이동하려면 숫자 증가 (예: +20px), 왼쪽으로 이동하려면 숫자 감소 (예: +5px) */
   /* 구글 캘린더 카드 중앙(50%) + 카드 절반 너비(75px) + 간격(10px) = 오른쪽 위 위치 */
   object-fit: contain;
   display: block;

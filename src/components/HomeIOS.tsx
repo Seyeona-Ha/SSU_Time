@@ -4,7 +4,7 @@ import logoSvg from '../assets/logo.svg';
 import appleCalendarCard from '../assets/apple-calendar-card.svg';
 import googleCalendarCard from '../assets/google-calendar-card.svg';
 import usersGroupSvg from '../assets/users-group.svg';
-import group13Svg from '../assets/group-13.svg';
+import framePopularSvg from '../assets/frame-popular.svg';
 import { share } from '../utils/share';
 import { trackVisitor, getCurrentVisitorCount } from '../utils/visitorCount';
 import { detectOS } from '../utils/detectOS';
@@ -69,11 +69,11 @@ function HomeIOS({ onCalendarClick }: HomeIOSProps) {
 
           {/* Calendar Cards - 애플 캘린더와 구글 캘린더 나란히 배치 */}
           <div className="calendar-card-wrapper">
-            {/* 상하 애니메이션 Group 13 요소 */}
+            {/* 상하 애니메이션 인기 배지 */}
             <img 
-              src={group13Svg} 
-              alt="현재 이용자 수" 
-              className="group-13-animated"
+              src={framePopularSvg} 
+              alt="인기" 
+              className="frame-popular-animated"
             />
             <img 
               src={appleCalendarCard} 

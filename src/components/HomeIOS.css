@@ -126,14 +126,14 @@
   flex-wrap: nowrap !important; /* 줄바꿈 방지 - 항상 가로로 배치 */
 }
 
-/* Group 13 - 상하 애니메이션 (경쾌하게 뛰듯이) */
-/* 위치 조정: top (위/아래), left (왼쪽/오른쪽) 값을 변경하세요 */
-.home-ios .group-13-animated {
-  width: 253px; /* SVG width: 253px */
-  height: 36px; /* SVG height: 36px */
+/* Frame Popular - 상하 애니메이션 (경쾌하게 뛰듯이) */
+/* 위치: X=20, Y=269.5 (디자인 속성 기준) */
+.home-ios .frame-popular-animated {
+  width: 60px; /* SVG width: 60px */
+  height: 34px; /* SVG height: 34px */
   position: absolute;
-  top: -30px; /* 더 아래로: -50px -> -30px */
-  left: 50px; /* 더 왼쪽으로: 중앙에서 왼쪽으로 이동 */
+  top: -20px; /* 애플 캘린더 버튼 위쪽 */
+  left: 25px; /* X=20px */
   object-fit: contain;
   display: block;
   animation: bounce-vertical 1.5s ease-in-out infinite;
