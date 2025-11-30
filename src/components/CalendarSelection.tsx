@@ -37,7 +37,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
   const categories: CalendarCategory[] = [
     {
       id: '1',
-      name: '기본 학사일정',
+      name: '필수 학사일정',
       description: '수강신청, 중간고사, 기말고사 등 학사 관련 일정을 추가할 수 있습니다.',
       detailTitle: '아래 일정이 추가돼요!',
       items: [
