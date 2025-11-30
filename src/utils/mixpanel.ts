@@ -44,6 +44,33 @@ export function setUserProperties(properties: Record<string, string | boolean | 
 }
 
 /**
+ * Mixpanel distinctId 설정 (백엔드에서 생성한 userId와 통일)
+ */
+export function identifyUser(userId: string): void {
+  try {
+    mixpanel.identify(userId);
+    // localStorage에 저장하여 이후에도 사용
+    localStorage.setItem('mixpanel_user_id', userId);
+  } catch (error) {
+    console.error('Mixpanel identify error:', error);
+  }
+}
+
+/**
+ * 저장된 userId로 identify (앱 초기화 시 호출)
+ */
+export function identifyUserFromStorage(): void {
+  try {
+    const userId = localStorage.getItem('mixpanel_user_id');
+    if (userId) {
+      mixpanel.identify(userId);
+    }
+  } catch (error) {
+    console.error('Mixpanel identify from storage error:', error);
+  }
+}
+
+/**
  * view_home 이벤트를 중복 없이 트래킹
  * - sessionStorage를 사용하여 세션 내 중복 방지
  * - timestamp 기반 필터링으로 race condition 방지

@@ -35,8 +35,8 @@ function App() {
       return
     }
 
-    // OS 값 결정 (other인 경우에도 트래킹)
-    const osValue = os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other'
+    // OS 값 결정 (web인 경우에도 트래킹)
+    const osValue = os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'web'
     
     // 초기 마운트인지 확인 (첫 렌더링인 경우에만 true)
     const isInitial = isInitialMountRef.current

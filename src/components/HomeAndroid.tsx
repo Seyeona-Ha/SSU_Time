@@ -38,7 +38,7 @@ function HomeAndroid({ onCalendarClick }: HomeAndroidProps) {
     const { trackEvent } = await import('../utils/mixpanel');
     const os = detectOS();
     trackEvent('share_click_home', {
-      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+      os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'web',
     });
     await share();
   };
@@ -82,7 +82,7 @@ function HomeAndroid({ onCalendarClick }: HomeAndroidProps) {
                 const { trackEvent } = await import('../utils/mixpanel');
                 const os = detectOS();
                 trackEvent('calendar_google_click', {
-                  os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'other',
+                  os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'web',
                 });
                 onCalendarClick('google');
               }}
