@@ -3,7 +3,7 @@ import './CalendarSelection.css';
 import requiredBadge from '../assets/required-badge.svg';
 import { share } from '../utils/share';
 import { detectOS } from '../utils/detectOS';
-import { trackEvent, identifyUser } from '../utils/mixpanel';
+import { trackEvent } from '../utils/mixpanel';
 
 interface CalendarSelectionProps {
   calendarType: 'apple' | 'google';
@@ -183,7 +183,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
   };
 
 
-  const handleAdd = async () => {
+  const handleAdd = () => {
     if (selectedCategories.length > 0) {
       // calendar_create_click 이벤트 트래킹
       trackEvent('calendar_create_click', {
@@ -197,86 +197,26 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       // onAdd 콜백 호출
       onAdd(selectedCategories);
       
-      try {
-        // 카테고리 ID를 백엔드 형식으로 변환
-        const categoryMap: Record<string, string> = {
-          '1': 'STANDARD',
-          '2': 'SCHOLARSHIP',
-          '3': 'EVENT',
-        };
-        const backendCategories = selectedCategories
-          .map(id => categoryMap[id])
-          .filter(Boolean) as string[];
-        
-        // 백엔드 API 호출
-        const response = await fetch('https://api.ssutime.yourssu.com/api/v1/calendar/subscribe-url', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': navigator.userAgent, // OS 정보 수집용
-          },
-          body: JSON.stringify({
-            categories: backendCategories,
-            provider: calendarType === 'apple' ? 'apple' : 'google',
-          }),
-        });
-        
-        if (response.status === 201) {
-          // Location 헤더에서 구독 URL 및 userId 가져오기
-          const location = response.headers.get('Location');
-          if (location) {
-            // Location 헤더에서 userId 추출: /api/v1/calendar/{userId}
-            const userIdMatch = location.match(/\/api\/v1\/calendar\/([^\/]+)/);
-            if (userIdMatch && userIdMatch[1]) {
-              const userId = userIdMatch[1];
-              // Mixpanel distinctId 설정 (백엔드와 통일)
-              identifyUser(userId);
-            }
-            
-            // 상대 경로인 경우 절대 경로로 변환
-            const calendarUrl = location.startsWith('http')
-              ? location
-              : `https://api.ssutime.yourssu.com${location}`;
-            
-            // Android 딥링크 처리
-            if (calendarType === 'google' && os === 'android') {
-              const googleIntentTarget = calendarUrl.replace(/^https?:\/\//, '');
-              const fallbackEncoded = encodeURIComponent(calendarUrl);
-              const androidDeepLink = `intent://${googleIntentTarget}#Intent;scheme=https;package=com.google.android.calendar;S.browser_fallback_url=${fallbackEncoded};end`;
-              window.location.href = androidDeepLink;
-              return;
-            }
-            
-            window.location.href = calendarUrl;
-            return;
-          }
-        }
-        
-        // API 호출 실패 시 기존 하드코딩된 URL로 폴백
-        throw new Error('API 호출 실패');
-      } catch (error) {
-        console.error('백엔드 API 호출 실패, 하드코딩된 URL로 폴백:', error);
-        
-        // 기존 하드코딩된 URL 로직 (폴백)
-        const combinationKey = getCombinationKey(selectedCategories);
-        const combination = calendarCombinationUrls[combinationKey];
+      const combinationKey = getCombinationKey(selectedCategories);
+      const combination = calendarCombinationUrls[combinationKey];
 
-        const calendarUrl =
-          combination?.[calendarType] ??
-          (calendarType === 'apple'
-            ? 'https://calendar.apple.com/add'
-            : 'https://calendar.google.com/calendar/render');
-        
-        if (calendarType === 'google' && os === 'android') {
-          const googleIntentTarget = calendarUrl.replace(/^https?:\/\//, '');
-          const fallbackEncoded = encodeURIComponent(calendarUrl);
-          const androidDeepLink = `intent://${googleIntentTarget}#Intent;scheme=https;package=com.google.android.calendar;S.browser_fallback_url=${fallbackEncoded};end`;
-          window.location.href = androidDeepLink;
-          return;
-        }
-        
-        window.location.href = calendarUrl;
+      // 매핑된 URL이 있으면 사용하고, 없으면 기본 URL로 이동
+      const calendarUrl =
+        combination?.[calendarType] ??
+        (calendarType === 'apple'
+          ? 'https://calendar.apple.com/add'
+          : 'https://calendar.google.com/calendar/render');
+      
+      // 선택된 카테고리 정보와 함께 URL로 이동
+      if (calendarType === 'google' && os === 'android') {
+        const googleIntentTarget = calendarUrl.replace(/^https?:\/\//, '');
+        const fallbackEncoded = encodeURIComponent(calendarUrl);
+        const androidDeepLink = `intent://${googleIntentTarget}#Intent;scheme=https;package=com.google.android.calendar;S.browser_fallback_url=${fallbackEncoded};end`;
+        window.location.href = androidDeepLink;
+        return;
       }
+      
+      window.location.href = calendarUrl;
     }
   };
 
