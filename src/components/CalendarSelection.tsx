@@ -231,7 +231,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
           .filter(Boolean) as string[];
         
         // Mixpanel distinctId 가져오기
-        const deviceId = getDistinctId();
+        const distinctId = getDistinctId();
         
         // 백엔드 API 호출
         const response = await fetch('https://api.ssutime.yourssu.com/api/v1/calendar/subscribe-url', {
@@ -243,7 +243,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
           body: JSON.stringify({
             categories: backendCategories,
             provider: 'apple',
-            deviceId: deviceId || undefined,
+            distinctId: distinctId || undefined,
           }),
         });
         
