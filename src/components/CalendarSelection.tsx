@@ -189,7 +189,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       trackEvent('calendar_create_click', {
         os: os === 'ios' ? 'ios' : os === 'android' ? 'android' : 'web',
         provider: calendarType === 'apple' ? 'apple' : 'google',
-        option_basic: selectedCategories.includes('1'),
+        option_standard: selectedCategories.includes('1'),
         option_scholarship: selectedCategories.includes('2'),
         option_event: selectedCategories.includes('3'),
       });
