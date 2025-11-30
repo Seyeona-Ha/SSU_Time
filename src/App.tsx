@@ -30,11 +30,6 @@ function App() {
 
   // 홈 화면 진입 시 view_home 이벤트 트래킹
   useEffect(() => {
-    // OS가 아직 감지되지 않았으면 대기
-    if (os === 'other' && !window.location.search.includes('os=')) {
-      return
-    }
-
     // currentPage가 'home'일 때만 트래킹
     if (currentPage !== 'home') {
       return
