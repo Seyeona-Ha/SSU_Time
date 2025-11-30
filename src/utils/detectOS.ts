@@ -3,9 +3,10 @@ export function detectOS(): 'ios' | 'android' | 'other' {
     return 'other';
   }
   const userAgent = window.navigator.userAgent.toLowerCase();
+  // 맥OS(macOS) 또는 iOS 디바이스 감지
   if (
     /iphone|ipad|ipod/.test(userAgent) ||
-    (userAgent.includes('mac') && 'ontouchend' in document)
+    /macintosh|mac os x/.test(userAgent)
   ) {
     return 'ios';
   }

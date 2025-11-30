@@ -126,6 +126,32 @@
   flex-wrap: nowrap !important; /* 줄바꿈 방지 - 항상 가로로 배치 */
 }
 
+/* Group 13 - 상하 애니메이션 (경쾌하게 뛰듯이) */
+/* 위치 조정: top (위/아래), left (왼쪽/오른쪽) 값을 변경하세요 */
+.home-ios .group-13-animated {
+  width: 253px; /* SVG width: 253px */
+  height: 36px; /* SVG height: 36px */
+  position: absolute;
+  top: -30px; /* 더 아래로: -50px -> -30px */
+  left: 50px; /* 더 왼쪽으로: 중앙에서 왼쪽으로 이동 */
+  object-fit: contain;
+  display: block;
+  animation: bounce-vertical 1.5s ease-in-out infinite;
+  z-index: 10;
+}
+
+/* 경쾌하게 뛰듯이 상하 애니메이션 */
+@keyframes bounce-vertical {
+  0%, 100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(-12px);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
 /* Apple Calendar Card - SVG로 교체 (전체 카드 디자인 포함) */
 .home-ios .apple-calendar-card {
   width: 165.5px; /* 캘린더 버튼 넓이 */
