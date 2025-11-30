@@ -3,7 +3,7 @@ import './CalendarSelection.css';
 import requiredBadge from '../assets/required-badge.svg';
 import { share } from '../utils/share';
 import { detectOS } from '../utils/detectOS';
-import { trackEvent, identifyUser, getDistinctId } from '../utils/mixpanel';
+import { trackEvent, getDistinctId } from '../utils/mixpanel';
 
 interface CalendarSelectionProps {
   calendarType: 'apple' | 'google';
@@ -249,17 +249,9 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
         });
         
         if (response.status === 201) {
-          // Location 헤더에서 구독 URL 및 userId 가져오기
+          // Location 헤더에서 구독 URL 가져오기
           const location = response.headers.get('Location');
           if (location) {
-            // Location 헤더에서 userId 추출: /api/v1/calendar/{userId}
-            const userIdMatch = location.match(/\/api\/v1\/calendar\/([^\/]+)/);
-            if (userIdMatch && userIdMatch[1]) {
-              const userId = userIdMatch[1];
-              // Mixpanel distinctId 설정 (백엔드와 통일)
-              identifyUser(userId);
-            }
-            
             // 상대 경로인 경우 절대 경로로 변환
             const calendarUrl = location.startsWith('webcal')
               ? location
