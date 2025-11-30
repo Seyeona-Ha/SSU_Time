@@ -71,6 +71,18 @@ export function identifyUserFromStorage(): void {
 }
 
 /**
+ * Mixpanel distinctId 가져오기
+ */
+export function getDistinctId(): string | undefined {
+  try {
+    return mixpanel.get_distinct_id();
+  } catch (error) {
+    console.error('Mixpanel get distinct id error:', error);
+    return undefined;
+  }
+}
+
+/**
  * view_home 이벤트를 중복 없이 트래킹
  * - sessionStorage를 사용하여 세션 내 중복 방지
  * - timestamp 기반 필터링으로 race condition 방지

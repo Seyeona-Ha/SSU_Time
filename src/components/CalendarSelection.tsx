@@ -3,7 +3,7 @@ import './CalendarSelection.css';
 import requiredBadge from '../assets/required-badge.svg';
 import { share } from '../utils/share';
 import { detectOS } from '../utils/detectOS';
-import { trackEvent, identifyUser } from '../utils/mixpanel';
+import { trackEvent, identifyUser, getDistinctId } from '../utils/mixpanel';
 
 interface CalendarSelectionProps {
   calendarType: 'apple' | 'google';
@@ -197,6 +197,28 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       // onAdd 콜백 호출
       onAdd(selectedCategories);
       
+      // 구글 캘린더인 경우: 서버 API 없이 하드코딩된 URL로 바로 이동
+      if (calendarType === 'google') {
+        const combinationKey = getCombinationKey(selectedCategories);
+        const combination = calendarCombinationUrls[combinationKey];
+
+        const calendarUrl =
+          combination?.[calendarType] ??
+          'https://calendar.google.com/calendar/render';
+        
+        if (os === 'android') {
+          const googleIntentTarget = calendarUrl.replace(/^https?:\/\//, '');
+          const fallbackEncoded = encodeURIComponent(calendarUrl);
+          const androidDeepLink = `intent://${googleIntentTarget}#Intent;scheme=https;package=com.google.android.calendar;S.browser_fallback_url=${fallbackEncoded};end`;
+          window.location.href = androidDeepLink;
+          return;
+        }
+        
+        window.location.href = calendarUrl;
+        return;
+      }
+      
+      // 애플 캘린더인 경우: 서버 API 호출
       try {
         // 카테고리 ID를 백엔드 형식으로 변환
         const categoryMap: Record<string, string> = {
@@ -208,6 +230,9 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
           .map(id => categoryMap[id])
           .filter(Boolean) as string[];
         
+        // Mixpanel distinctId 가져오기
+        const deviceId = getDistinctId();
+        
         // 백엔드 API 호출
         const response = await fetch('https://api.ssutime.yourssu.com/api/v1/calendar/subscribe-url', {
           method: 'POST',
@@ -217,7 +242,8 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
           },
           body: JSON.stringify({
             categories: backendCategories,
-            provider: calendarType === 'apple' ? 'apple' : 'google',
+            provider: 'apple',
+            deviceId: deviceId || undefined,
           }),
         });
         
@@ -238,15 +264,6 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
               ? location
               : `webcal://api.ssutime.yourssu.com${location}`;
             
-            // Android 딥링크 처리
-            if (calendarType === 'google' && os === 'android') {
-              const googleIntentTarget = calendarUrl.replace(/^https?:\/\//, '');
-              const fallbackEncoded = encodeURIComponent(calendarUrl);
-              const androidDeepLink = `intent://${googleIntentTarget}#Intent;scheme=https;package=com.google.android.calendar;S.browser_fallback_url=${fallbackEncoded};end`;
-              window.location.href = androidDeepLink;
-              return;
-            }
-            
             window.location.href = calendarUrl;
             return;
           }
@@ -263,17 +280,7 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
 
         const calendarUrl =
           combination?.[calendarType] ??
-          (calendarType === 'apple'
-            ? 'https://calendar.apple.com/add'
-            : 'https://calendar.google.com/calendar/render');
-        
-        if (calendarType === 'google' && os === 'android') {
-          const googleIntentTarget = calendarUrl.replace(/^https?:\/\//, '');
-          const fallbackEncoded = encodeURIComponent(calendarUrl);
-          const androidDeepLink = `intent://${googleIntentTarget}#Intent;scheme=https;package=com.google.android.calendar;S.browser_fallback_url=${fallbackEncoded};end`;
-          window.location.href = androidDeepLink;
-          return;
-        }
+          'https://calendar.apple.com/add';
         
         window.location.href = calendarUrl;
       }
