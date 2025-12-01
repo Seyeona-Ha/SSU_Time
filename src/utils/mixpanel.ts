@@ -91,6 +91,34 @@ export function getDistinctId(): string | undefined {
 let lastViewHomeTime = 0;
 const VIEW_HOME_DEBOUNCE_MS = 500; // 500ms 이내 중복 호출 방지
 
+/**
+ * URL에서 utm_source를 읽어서 반환
+ * 유효한 값: "everytime", "instagram", "poster", "link"
+ * 그 외의 경우 "" 또는 "unknown" 반환
+ */
+function getUtmSource(): string {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get('utm_source');
+    
+    if (!utmSource) {
+      return '';
+    }
+    
+    // 유효한 값 체크
+    const validSources = ['everytime', 'instagram', 'poster', 'link'];
+    if (validSources.includes(utmSource)) {
+      return utmSource;
+    }
+    
+    // 유효하지 않은 값
+    return 'unknown';
+  } catch (error) {
+    console.error('Error getting utm_source:', error);
+    return '';
+  }
+}
+
 export function trackViewHomeOnce(os: string, isInitial: boolean): void {
   try {
     const currentTime = Date.now();
@@ -130,10 +158,14 @@ export function trackViewHomeOnce(os: string, isInitial: boolean): void {
       finalInitial = false;
     }
     
+    // utm_source 가져오기
+    const utmSource = getUtmSource();
+    
     // 이벤트 전송
     trackEvent('view_home', {
       os: os,
       initial: finalInitial,
+      utm_source: utmSource,
     });
     
     // timestamp 기록

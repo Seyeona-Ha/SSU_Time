@@ -1,12 +1,22 @@
 /**
+ * 공유할 URL을 생성합니다. utm_source=link를 추가합니다.
+ */
+function getShareUrl(): string {
+  const url = new URL(window.location.href);
+  // utm_source를 link로 설정 (기존 값이 있어도 덮어씀)
+  url.searchParams.set('utm_source', 'link');
+  return url.toString();
+}
+
+/**
  * 모바일 기기(iOS/Android)에서 Web Share API를 사용하여 공유 기능을 실행합니다.
  */
 export async function share(): Promise<void> {
-  const currentUrl = window.location.href;
+  const shareUrl = getShareUrl();
   const shareData: ShareData = {
     title: 'SSU Time - 학사 일정 추가 서비스',
     text: '흩어진 학사 일정을 모아 자동으로 캘린더에 추가할 수 있어요!',
-    url: currentUrl,
+    url: shareUrl,
   };
 
   try {
@@ -36,7 +46,7 @@ export async function share(): Promise<void> {
       }
     } else {
       // Fallback: 클립보드에 복사
-      await navigator.clipboard.writeText(shareData.url || currentUrl);
+      await navigator.clipboard.writeText(shareData.url || shareUrl);
       alert('링크가 클립보드에 복사되었습니다.');
     }
   } catch (error) {
@@ -45,7 +55,7 @@ export async function share(): Promise<void> {
       console.error('공유 실패:', error);
       // 에러 발생 시 클립보드에 복사 시도
       try {
-        await navigator.clipboard.writeText(shareData.url || currentUrl);
+        await navigator.clipboard.writeText(shareData.url || shareUrl);
         alert('링크가 클립보드에 복사되었습니다.');
       } catch (clipboardError) {
         console.error('클립보드 복사 실패:', clipboardError);
