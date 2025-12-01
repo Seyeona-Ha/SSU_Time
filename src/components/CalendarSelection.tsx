@@ -37,12 +37,21 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
   const categories: CalendarCategory[] = [
     {
       id: '1',
-      name: '필수 학사일정',
+      name: '필수 학사 일정',
       description: '수강신청, 중간고사, 기말고사 등 학사 관련 일정을 추가할 수 있습니다.',
       detailTitle: '아래 일정이 추가돼요!',
       items: [
         { text: '교내 학사 캘린더 일정' },
         { text: '국가・교내 장학금' },
+      ]
+    },
+    {
+      id: '3',
+      name: '행사 일정',
+      description: '학교 행사 및 주요 공지사항 일정을 추가할 수 있습니다.',
+      detailTitle: '아래 일정이 추가돼요!',
+      items: [
+        { text: '총학생회 공지 이벤트 일정' },
       ]
     },
     {
@@ -52,15 +61,6 @@ function CalendarSelection({ calendarType, onBack, onAdd }: CalendarSelectionPro
       detailTitle: '아래 일정이 추가돼요!',
       items: [
         { text: '주요 장학 일정' },
-      ]
-    },
-    {
-      id: '3',
-      name: '교내 행사 일정',
-      description: '학교 행사 및 주요 공지사항 일정을 추가할 수 있습니다.',
-      detailTitle: '아래 일정이 추가돼요!',
-      items: [
-        { text: '총학생회 공지 이벤트 일정' },
       ]
     }
   ];
